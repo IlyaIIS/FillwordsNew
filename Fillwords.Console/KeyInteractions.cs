@@ -117,18 +117,18 @@ namespace Fillwords
 
                 //Если курсор сдвинулся
                 if (Player.preX != Player.x || Player.preY != Player.y)
-                    GameLogicMethods.PlayerMoveAction(field, isEnter);
+                    PrinterLogicMetods.PlayerMoveAction(field, isEnter);
 
                 //Действия при enter или space
                 if (key.Key == ConsoleKey.Enter || key.Key == ConsoleKey.Spacebar)
-                    GameLogicMethods.PlayerEnterAction(field, ref isEnter, allWords);
+                    PrinterLogicMetods.PlayerEnterAction(field, ref isEnter, allWords);
 
                 //Действия при esc
                 if (key.Key == ConsoleKey.Escape)
                 {
                     if (isEnter)
                     {
-                        GameLogicMethods.BrakeFilling(field);
+                        PrinterLogicMetods.BrakeFilling(field);
                         
                         Printer.DrawText(new string(' ', Console.WindowWidth - (field.xSize * 4 + 2)), Player.wordsList.Count);
 
