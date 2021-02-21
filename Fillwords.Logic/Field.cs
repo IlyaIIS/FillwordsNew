@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Fillwords
 {
-    class Field
+    public class Field
     {
         Random rnd = new Random();
         
@@ -138,7 +138,7 @@ namespace Fillwords
                 tryNum++;
                 if (tryNum > 10000)
                 {
-                    Printer.DrawPopupWindow("Словарь \"words.txt\" слишком маленький. Добавьте больше слов");
+                    //Printer.DrawPopupWindow("Словарь \"words.txt\" слишком маленький. Добавьте больше слов");
                     Environment.Exit(0);
                 }
             } while (cellNum > 0);

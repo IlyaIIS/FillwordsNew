@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Fillwords
 {
-    static class DataWorker
+    public static class DataWorker
     {
         static public WordsSet wordsSet;
         static public Dictionary<string, int> userScoreDict = new Dictionary<string, int>();
@@ -31,7 +31,7 @@ namespace Fillwords
                 }
                 else
                 {
-                    Printer.DrawPopupWindow("Добавьте слова в словарь \"words.txt\" (сликом малое количество слов может не позволить сгенерировать поле)");
+                    //Printer.DrawPopupWindow("Добавьте слова в словарь \"words.txt\" (сликом малое количество слов может не позволить сгенерировать поле)");
                     Console.ReadKey(true);
                     Environment.Exit(0);
                 }
@@ -39,7 +39,7 @@ namespace Fillwords
             else
             {
                 File.Create("words.txt");
-                Printer.DrawPopupWindow("Добавьте слова в словарь \"words.txt\" (сликом малое количество слов может не позволить сгенерировать поле)");
+                //Printer.DrawPopupWindow("Добавьте слова в словарь \"words.txt\" (сликом малое количество слов может не позволить сгенерировать поле)");
                 Console.ReadKey(true);
                 Environment.Exit(0);
             }
@@ -329,7 +329,7 @@ namespace Fillwords
         } 
     }
 
-    struct WordsSet
+    public struct WordsSet
     {
         public string[] allWords;            //Массив из всех слов
         public List<List<string>> wordsSet;  //Массив массивов слов, сгрупперованных по длине
@@ -354,7 +354,7 @@ namespace Fillwords
         }
     }
 
-    struct MyVector2
+    public struct MyVector2
     {
         public int X { get; set; }
         public int Y { get; set; }

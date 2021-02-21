@@ -2,7 +2,7 @@
 
 namespace Fillwords
 {
-    static class Settings
+    public static class Settings
     {
         static public int xSize = 10;
         static public int ySize = 10;
@@ -30,7 +30,7 @@ namespace Fillwords
         }
     }
 
-    class SettingsIndexer
+    public class SettingsIndexer
     {
         public int lenght = 8;
         public object this[int index]
@@ -67,7 +67,7 @@ namespace Fillwords
         }
     }
 
-    class ColorsSet
+    public class ColorsSet
     {
         static dynamic[,] colorsList =
         {

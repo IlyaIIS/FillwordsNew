@@ -2,7 +2,7 @@
 
 namespace Fillwords
 {
-    static class Player
+    public static class Player
     {
         static public int x, y;
         static public int preX, preY;
