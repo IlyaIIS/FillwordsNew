@@ -96,8 +96,8 @@ namespace Fillwords
             string[] allWords = DataWorker.WordsSet.AllWords;
             
             Printer.DrawField(field);
-            Printer.DrawFieldItem(0, 0, Settings.Colors[Settings.underCursorColor, 0],
-                                        Settings.Colors[Settings.underCursorColor, 1], field);
+            Printer.DrawFieldItem(0, 0, ColorsSet.ColorsList[Settings.underCursorColor, 0],
+                                        ColorsSet.ColorsList[Settings.underCursorColor, 1], field);
             Printer.DrawScore(Player.Score);
             for(int i = 0; i < Player.WordsList.Count; i++)
                 Printer.DrawText(Player.WordsList[i], i);
@@ -195,7 +195,7 @@ namespace Fillwords
                         {
                             int x = field.WordPos[i][ii].X;
                             int y = field.WordPos[i][ii].Y;
-                            Printer.DrawFieldItem(x, y, field.CellColor[x, y, 0], field.CellColor[x, y, 1], field);
+                            Printer.DrawFieldItem(x, y, ColorsSet.ColorsList[field.CellColor[x, y],0], ColorsSet.ColorsList[field.CellColor[x, y],1], field);
                         }
 
                     Printer.DrawFieldItem(Player.X, Player.Y, ConsoleColor.DarkGray, ConsoleColor.White, field);

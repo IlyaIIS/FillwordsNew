@@ -12,7 +12,7 @@ namespace Fillwords
         public int XSize { get; set; }
         public int YSize { get; set; }                           //размер поля
         public char[,] CellLetter { get; set; }                  //поле букв
-        public ConsoleColor[,,] CellColor { get; set; }
+        public int[,] CellColor { get; set; }
         public bool IsLoaded { get; set; }
 
         public Field()
@@ -27,7 +27,7 @@ namespace Fillwords
             XSize = xSize;
             YSize = ySize;
             CellLetter = new char[XSize, YSize];
-            CellColor = new ConsoleColor[XSize, YSize, 2];
+            CellColor = new int[XSize, YSize];
 
             //создание поля свободных ячеек
             bool[,] preField = new bool[XSize + 2, YSize + 2];
@@ -163,8 +163,7 @@ namespace Fillwords
                     int y = coordList[step].Y;
                     WordPos[wordNum].Add(coordList[step]);
                     CellLetter[x, y] = letter;
-                    CellColor[x, y, 0] = Settings.Colors[Settings.fieldColor, 0];
-                    CellColor[x, y, 1] = Settings.Colors[Settings.fieldColor, 1];
+                    CellColor[x, y] = Settings.fieldColor;
                     step++;
                 }
             }

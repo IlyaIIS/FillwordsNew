@@ -140,7 +140,7 @@ namespace Fillwords
 
             for (int y = 0; y < field.YSize; y++)
                 for (int x = 0; x < field.XSize; x++)
-                    data += field.CellColor[x, y, 0] + " " + field.CellColor[x, y, 1] + " ";
+                    data += field.CellColor[x, y] + " ";
 
             File.WriteAllText(path, data);
         }
@@ -210,19 +210,17 @@ namespace Fillwords
             }
 
             //Цвета поля
-            field.CellColor = new ConsoleColor[field.XSize, field.YSize, 2];
-            bool isFirstColor = true;
+            field.CellColor = new int[field.XSize, field.YSize];
             localStr = string.Empty;
             int score = 0;
             for (int i = 0; i < data[4].Length; i++)
             {
                 if (data[4][i] == ' ')
                 {
-                    int x = (score / 2) % field.XSize;
-                    int y = (score / 2) / field.XSize;
-                    field.CellColor[x, y, isFirstColor ? 0 : 1] = GetColorFromName(localStr);
+                    int x = score % field.XSize;
+                    int y = score / field.XSize;
+                    field.CellColor[x, y] = Int32.Parse(localStr);
                     localStr = string.Empty;
-                    isFirstColor = !isFirstColor;
                     score++;
                 }
                 else

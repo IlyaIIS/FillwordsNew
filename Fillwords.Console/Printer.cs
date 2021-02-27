@@ -95,8 +95,8 @@ namespace Fillwords
 
         static public void DrawField(Field field)
         {
-            Console.BackgroundColor = Settings.Colors[Settings.fieldColor, 0];
-            Console.ForegroundColor = Settings.Colors[Settings.fieldColor, 1];
+            Console.BackgroundColor = ColorsSet.ColorsList[Settings.fieldColor, 0];
+            Console.ForegroundColor = ColorsSet.ColorsList[Settings.fieldColor, 1];
 
             DrawFieldLine("┌", "─", "┬", "┐", field.XSize);
             Console.WriteLine();
@@ -107,11 +107,11 @@ namespace Fillwords
                 for (int x = 0; x < field.XSize; x++)
                 {
                     Console.Write(" ");
-                    Console.BackgroundColor = field.CellColor[x, y, 0];
-                    Console.ForegroundColor = field.CellColor[x, y, 1];
+                    Console.BackgroundColor = ColorsSet.ColorsList[field.CellColor[x, y], 0];
+                    Console.ForegroundColor = ColorsSet.ColorsList[field.CellColor[x, y], 1];
                     Console.Write(field.CellLetter[x, y]);
-                    Console.BackgroundColor = Settings.Colors[Settings.fieldColor, 0];
-                    Console.ForegroundColor = Settings.Colors[Settings.fieldColor, 1];
+                    Console.BackgroundColor = ColorsSet.ColorsList[Settings.fieldColor, 0];
+                    Console.ForegroundColor = ColorsSet.ColorsList[Settings.fieldColor, 1];
                     Console.Write(" " + "│");
                 }
                 Console.WriteLine();
@@ -132,7 +132,7 @@ namespace Fillwords
             Console.Write(sign4);
         }
 
-        static public void DrawFieldItem(int x, int y, dynamic color1, dynamic color2, Field field)
+        static public void DrawFieldItem(int x, int y, ConsoleColor color1, ConsoleColor color2, Field field)
         {
             Console.SetCursorPosition(x * 4 + 2, y * 2 + 1);
             Console.BackgroundColor = color1;
@@ -226,8 +226,8 @@ namespace Fillwords
                 Console.Write(" <     > ");
 
                 Console.SetCursorPosition(Console.CursorLeft - 6, Console.CursorTop);
-                Console.BackgroundColor = Settings.Colors[(int)Settings.property[property], 0];
-                Console.ForegroundColor = Settings.Colors[(int)Settings.property[property], 1];
+                Console.BackgroundColor = ColorsSet.ColorsList[(int)Settings.property[property], 0];
+                Console.ForegroundColor = ColorsSet.ColorsList[(int)Settings.property[property], 1];
                 Console.Write(" A ");
                 Console.ResetColor();
             }
@@ -242,6 +242,50 @@ namespace Fillwords
 
             Console.WriteLine();
             Console.ResetColor();
+        }
+    }
+
+    public class ColorsSet
+    {
+        static public dynamic[,] ColorsList =
+        {
+            { ConsoleColor.Black    , ConsoleColor.White },
+            { ConsoleColor.DarkGray , ConsoleColor.White },
+            { ConsoleColor.Gray     , ConsoleColor.Black },
+            { ConsoleColor.DarkBlue , ConsoleColor.White },
+            { ConsoleColor.DarkGreen, ConsoleColor.White },
+            { ConsoleColor.DarkCyan , ConsoleColor.White },
+            { ConsoleColor.DarkRed  , ConsoleColor.White },
+            { ConsoleColor.DarkMagenta, ConsoleColor.White },
+            { ConsoleColor.DarkYellow , ConsoleColor.Black },
+            { ConsoleColor.Blue     , ConsoleColor.Black },
+            { ConsoleColor.Green    , ConsoleColor.Black },
+            { ConsoleColor.Cyan     , ConsoleColor.Black },
+            { ConsoleColor.Red      , ConsoleColor.White },
+            { ConsoleColor.Magenta  , ConsoleColor.White },
+            { ConsoleColor.Yellow   , ConsoleColor.Black }
+        };
+
+        public ConsoleColor this[int index1, int index2]
+        {
+            get
+            {
+                return ColorsList[Math.Abs(index1) % (ColorsList.Length / ColorsList.Rank), Math.Abs(index2) % 2];
+            }
+        }
+
+        public static int GetRandomColor()
+        {
+            Random rnd = new Random();
+            int randomNum;
+
+            do
+            {
+                randomNum = rnd.Next(ColorsList.Length / ColorsList.Rank);
+            } while (randomNum == Settings.fieldColor || randomNum == Settings.underCursorColor ||
+                                                         randomNum == Settings.pickedWordColor);
+
+            return randomNum;
         }
     }
 }
