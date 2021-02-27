@@ -98,29 +98,29 @@ namespace Fillwords
             Console.BackgroundColor = Settings.Colors[Settings.fieldColor, 0];
             Console.ForegroundColor = Settings.Colors[Settings.fieldColor, 1];
 
-            DrawFieldLine("┌", "─", "┬", "┐", field.xSize);
+            DrawFieldLine("┌", "─", "┬", "┐", field.XSize);
             Console.WriteLine();
 
-            for (int y = 0; y < field.ySize; y++)
+            for (int y = 0; y < field.YSize; y++)
             {
                 Console.Write('│');
-                for (int x = 0; x < field.xSize; x++)
+                for (int x = 0; x < field.XSize; x++)
                 {
                     Console.Write(" ");
-                    Console.BackgroundColor = field.cellColor[x, y, 0];
-                    Console.ForegroundColor = field.cellColor[x, y, 1];
-                    Console.Write(field.cellLetter[x, y]);
+                    Console.BackgroundColor = field.CellColor[x, y, 0];
+                    Console.ForegroundColor = field.CellColor[x, y, 1];
+                    Console.Write(field.CellLetter[x, y]);
                     Console.BackgroundColor = Settings.Colors[Settings.fieldColor, 0];
                     Console.ForegroundColor = Settings.Colors[Settings.fieldColor, 1];
                     Console.Write(" " + "│");
                 }
                 Console.WriteLine();
-                DrawFieldLine("├", "─", "┼", "┤", field.xSize);
+                DrawFieldLine("├", "─", "┼", "┤", field.XSize);
                 Console.WriteLine();
             }
 
             Console.SetCursorPosition(0, Console.CursorTop - 1);
-            DrawFieldLine("└", "─", "┴", "┘", field.xSize);
+            DrawFieldLine("└", "─", "┴", "┘", field.XSize);
 
             Console.ResetColor();
         }
@@ -137,7 +137,7 @@ namespace Fillwords
             Console.SetCursorPosition(x * 4 + 2, y * 2 + 1);
             Console.BackgroundColor = color1;
             Console.ForegroundColor = color2;
-            Console.Write(field.cellLetter[x, y]);
+            Console.Write(field.CellLetter[x, y]);
             Console.ResetColor();
         }
 
@@ -166,7 +166,7 @@ namespace Fillwords
         static public void DrawTableOfRecords()
         {
             DrawMenuItem(3, true);
-            foreach(var user in DataWorker.userScoreDict)
+            foreach(var user in DataWorker.UserScoreDict)
             {
                 Console.WriteLine(user.Key + ": " + user.Value);
             }
