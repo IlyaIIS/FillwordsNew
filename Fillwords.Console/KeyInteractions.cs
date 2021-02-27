@@ -43,7 +43,7 @@ namespace Fillwords
                 GetUserName();
 
                 Field field = new Field();
-                field.CreateNewField(Settings.xSize, Settings.ySize, new WordsSet(DataWorker.wordsSet.allWords));
+                field.CreateNewField(Settings.xSize, Settings.ySize, new WordsSet(DataWorker.WordsSet.AllWords));
                 Player.CreateNewPlayer();
                 DoGameActions(field);
             }
@@ -86,21 +86,21 @@ namespace Fillwords
                 userName = Console.ReadLine();
             } while (userName.Length == 0);
 
-            Player.name = userName;
+            Player.Name = userName;
 
             Console.Clear();
         }
 
         static private void DoGameActions(Field field)
         {
-            string[] allWords = DataWorker.wordsSet.allWords;
+            string[] allWords = DataWorker.WordsSet.AllWords;
             
             Printer.DrawField(field);
             Printer.DrawFieldItem(0, 0, Settings.Colors[Settings.underCursorColor, 0],
                                         Settings.Colors[Settings.underCursorColor, 1], field);
-            Printer.DrawScore(Player.score);
-            for(int i = 0; i < Player.wordsList.Count; i++)
-                Printer.DrawText(Player.wordsList[i], i);
+            Printer.DrawScore(Player.Score);
+            for(int i = 0; i < Player.WordsList.Count; i++)
+                Printer.DrawText(Player.WordsList[i], i);
 
             ConsoleKeyInfo key;
             bool isEnter = false;
@@ -108,15 +108,15 @@ namespace Fillwords
 
             do
             {
-                Player.preX = Player.x;
-                Player.preY = Player.y;
+                Player.PreX = Player.X;
+                Player.PreY = Player.Y;
 
                 key = Console.ReadKey(true);
 
                 MoveCursorInField(field,  key);
 
                 //Если курсор сдвинулся
-                if (Player.preX != Player.x || Player.preY != Player.y)
+                if (Player.PreX != Player.X || Player.PreY != Player.Y)
                     PrinterLogicMetods.PlayerMoveAction(field, isEnter);
 
                 //Действия при enter или space
@@ -130,7 +130,7 @@ namespace Fillwords
                     {
                         PrinterLogicMetods.BrakeFilling(field);
                         
-                        Printer.DrawText(new string(' ', Console.WindowWidth - (field.xSize * 4 + 2)), Player.wordsList.Count);
+                        Printer.DrawText(new string(' ', Console.WindowWidth - (field.XSize * 4 + 2)), Player.WordsList.Count);
 
                         isEnter = false;
                     }
@@ -149,23 +149,23 @@ namespace Fillwords
                         {
                             Console.Clear();
                             Printer.DrawField(field);
-                            Printer.DrawFieldItem(Player.x, Player.y, ConsoleColor.DarkGray, ConsoleColor.White, field);
-                            for (int i = 0; i < Player.wordsList.Count; i++)
-                                Printer.DrawText(Player.wordsList[i], i);
+                            Printer.DrawFieldItem(Player.X, Player.Y, ConsoleColor.DarkGray, ConsoleColor.White, field);
+                            for (int i = 0; i < Player.WordsList.Count; i++)
+                                Printer.DrawText(Player.WordsList[i], i);
                         }
                     }
                 }
 
                 //Проверка на победу
-                if (Player.wordsList.Count == field.wordsList.Count)
+                if (Player.WordsList.Count == field.WordsList.Count)
                 {
-                    if (DataWorker.userScoreDict.ContainsKey(Player.name))
-                        DataWorker.userScoreDict[Player.name] += Player.score;
+                    if (DataWorker.UserScoreDict.ContainsKey(Player.Name))
+                        DataWorker.UserScoreDict[Player.Name] += Player.Score;
                     else
-                        DataWorker.userScoreDict.Add(Player.name, Player.score);
+                        DataWorker.UserScoreDict.Add(Player.Name, Player.Score);
 
                     DataWorker.UpdateUsetScoreFile("users_score.txt");
-                    if (field.isLoaded) DataWorker.DeliteSave("field_save.txt", "plyer_save.txt");
+                    if (field.IsLoaded) DataWorker.DeliteSave("field_save.txt", "plyer_save.txt");
 
                     Printer.DrawPopupWindow("Вы отгодали все слова!");
                     Console.ReadKey(true);
@@ -177,12 +177,12 @@ namespace Fillwords
                 {
                     isCheat = true;
                     Random rnd = new Random();
-                    int randomNum = rnd.Next(field.wordsList.Count);
+                    int randomNum = rnd.Next(field.WordsList.Count);
 
-                    for (int ii = 0; ii < field.wordsList[randomNum].Length; ii++)
+                    for (int ii = 0; ii < field.WordsList[randomNum].Length; ii++)
                     {
-                        int x = field.wordPos[randomNum][ii].X;
-                        int y = field.wordPos[randomNum][ii].Y;
+                        int x = field.WordPos[randomNum][ii].X;
+                        int y = field.WordPos[randomNum][ii].Y;
                         Printer.DrawFieldItem(x, y, ConsoleColor.Yellow, ConsoleColor.Red, field);
                     }
                 }
@@ -190,15 +190,15 @@ namespace Fillwords
                 if (isCheat)
                 {
                     isCheat = false;
-                    for (int i = 0; i < field.wordsList.Count; i++)
-                        for (int ii = 0; ii < field.wordsList[i].Length; ii++)
+                    for (int i = 0; i < field.WordsList.Count; i++)
+                        for (int ii = 0; ii < field.WordsList[i].Length; ii++)
                         {
-                            int x = field.wordPos[i][ii].X;
-                            int y = field.wordPos[i][ii].Y;
-                            Printer.DrawFieldItem(x, y, field.cellColor[x, y, 0], field.cellColor[x, y, 1], field);
+                            int x = field.WordPos[i][ii].X;
+                            int y = field.WordPos[i][ii].Y;
+                            Printer.DrawFieldItem(x, y, field.CellColor[x, y, 0], field.CellColor[x, y, 1], field);
                         }
 
-                    Printer.DrawFieldItem(Player.x, Player.y, ConsoleColor.DarkGray, ConsoleColor.White, field);
+                    Printer.DrawFieldItem(Player.X, Player.Y, ConsoleColor.DarkGray, ConsoleColor.White, field);
                 }
 
             } while (true);
@@ -206,10 +206,10 @@ namespace Fillwords
 
         static private void MoveCursorInField(Field field, ConsoleKeyInfo key)
         {
-            if (Player.x < field.xSize - 1 && (key.Key == ConsoleKey.RightArrow || key.Key == ConsoleKey.D)) Player.x++;
-            if (Player.y > 0               && (key.Key == ConsoleKey.UpArrow    || key.Key == ConsoleKey.W)) Player.y--;
-            if (Player.x > 0               && (key.Key == ConsoleKey.LeftArrow  || key.Key == ConsoleKey.A)) Player.x--;
-            if (Player.y < field.ySize - 1 && (key.Key == ConsoleKey.DownArrow  || key.Key == ConsoleKey.S)) Player.y++;
+            if (Player.X < field.XSize - 1 && (key.Key == ConsoleKey.RightArrow || key.Key == ConsoleKey.D)) Player.X++;
+            if (Player.Y > 0               && (key.Key == ConsoleKey.UpArrow    || key.Key == ConsoleKey.W)) Player.Y--;
+            if (Player.X > 0               && (key.Key == ConsoleKey.LeftArrow  || key.Key == ConsoleKey.A)) Player.X--;
+            if (Player.Y < field.YSize - 1 && (key.Key == ConsoleKey.DownArrow  || key.Key == ConsoleKey.S)) Player.Y++;
         }
 
         static private void DoSettingsActions()
