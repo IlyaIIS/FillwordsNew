@@ -31,17 +31,13 @@ namespace Fillwords
                 }
                 else
                 {
-                    //Printer.DrawPopupWindow("Добавьте слова в словарь \"words.txt\" (сликом малое количество слов может не позволить сгенерировать поле)");
-                    Console.ReadKey(true);
-                    Environment.Exit(0);
+                    WordsSet = new WordsSet(new string[0]);
                 }
             }
             else
             {
                 File.Create("words.txt");
-                //Printer.DrawPopupWindow("Добавьте слова в словарь \"words.txt\" (сликом малое количество слов может не позволить сгенерировать поле)");
-                Console.ReadKey(true);
-                Environment.Exit(0);
+                WordsSet = new WordsSet(new string[0]);
             }
         }
 
