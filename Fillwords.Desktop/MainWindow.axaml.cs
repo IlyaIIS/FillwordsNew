@@ -25,7 +25,7 @@ namespace Fillwords.Desktop
             Printer.SetPrinterParams(((StackPanel)Content).Children,  this.Find<Window>("TheMainWindow"));
 
             if (DataWorker.WordsSet.AllWords.Length != 0)
-                Printer.SetMainWindow(((StackPanel)Content).Children);
+                Printer.SetMainWindow();
             else
                 Printer.SetErrorWindow("Добавьте слова в словарь \"words.txt\" (сликом малое количество слов может не позволить сгенерировать поле)");
         }

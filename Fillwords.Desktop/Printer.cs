@@ -19,40 +19,46 @@ namespace Fillwords.Desktop
             MainWindow = mainWindow;
         }
 
-        static public void SetMainWindow(Controls stackPanelItemList)
+        static public void SetMainWindow()
         {
             int buttonsFontSize = 40;
             int buttonsWidth = 320;
 
-            stackPanelItemList.Clear();
+            StackPanelItemList.Clear();
 
-            var tbTitle = new TextBlock();
-            tbTitle.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
-            tbTitle.FontSize = buttonsFontSize * 3;
-            tbTitle.FontStyle = Avalonia.Media.FontStyle.Italic;
-            tbTitle.Text = "FILLWORDS";
-            stackPanelItemList.Add(tbTitle);
+            StackPanelItemList.Add(CreateTitleTextBlock("FILLWORDS", buttonsFontSize * 3));
 
-            stackPanelItemList.Add(CreateButton("НОВАЯ ИГРА", buttonsFontSize, buttonsWidth, ItemEvents.btnStartNewGame_Click));
-            stackPanelItemList.Add(CreateButton("ПРОДОЛЖИТЬ", buttonsFontSize, buttonsWidth, ItemEvents.btnContinue_Click));
-            stackPanelItemList.Add(CreateButton("РЕЙТИНГ",    buttonsFontSize, buttonsWidth, ItemEvents.btnRecords_Click));
-            stackPanelItemList.Add(CreateButton("НАСТРОЙКИ",  buttonsFontSize, buttonsWidth, ItemEvents.btnSettings_Click));
-            stackPanelItemList.Add(CreateButton("ВЫХОД",      buttonsFontSize, buttonsWidth, ItemEvents.btnExit_Click));
+            StackPanelItemList.Add(CreateButton("НОВАЯ ИГРА", ItemEvents.btnStartNewGame_Click, buttonsFontSize, buttonsWidth));
+            StackPanelItemList.Add(CreateButton("ПРОДОЛЖИТЬ", ItemEvents.btnContinue_Click, buttonsFontSize, buttonsWidth));
+            StackPanelItemList.Add(CreateButton("РЕЙТИНГ",    ItemEvents.btnRecords_Click,  buttonsFontSize, buttonsWidth));
+            StackPanelItemList.Add(CreateButton("НАСТРОЙКИ",  ItemEvents.btnSettings_Click, buttonsFontSize, buttonsWidth));
+            StackPanelItemList.Add(CreateButton("ВЫХОД",      ItemEvents.btnMainExit_Click, buttonsFontSize, buttonsWidth));
         }
 
-        static private Button CreateButton(string text, int fontSize, int width, EventDel eventClick)
+        static private Button CreateButton(string text, EventDel eventClick, int fontSize = 20, int width = 0, 
+            Avalonia.Layout.HorizontalAlignment horizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center)
         {
             var button = new Button();
 
             button.Content = text;
             button.FontSize = fontSize;
-            button.Width = width;
+            if (width != 0) button.Width = width;
             button.Click += new EventHandler<Avalonia.Interactivity.RoutedEventArgs>(eventClick);
+            button.HorizontalAlignment = horizontalAlignment;
 
-            button.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
             button.HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center;
             
             return button;
+        }
+
+        static private TextBlock CreateTitleTextBlock(string text, int fontSize)
+        {
+            var tbTitle = new TextBlock();
+            tbTitle.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
+            tbTitle.FontSize = fontSize;
+            tbTitle.FontStyle = Avalonia.Media.FontStyle.Italic;
+            tbTitle.Text = "FILLWORDS";
+            return tbTitle;
         }
 
         static public void SetErrorWindow(string text)
@@ -68,6 +74,79 @@ namespace Fillwords.Desktop
             tbErrorText.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
 
             StackPanelItemList.Add(tbErrorText);
+        }
+
+        static public void SetRecordsWindow()
+        {
+            StackPanelItemList.Clear();
+
+            StackPanelItemList.Add(CreateButton("Назад", ItemEvents.btnExitToMainWindow_Click, horizontalAlignment : Avalonia.Layout.HorizontalAlignment.Right));
+
+            StackPanelItemList.Add(CreateTitleTextBlock("РЕКОРДЫ", 50));
+
+            foreach (var user in DataWorker.UserScoreDict)
+                StackPanelItemList.Add(CreateTextBlock(user.Key + ": " + user.Value));
+        }
+
+        static private TextBlock CreateTextBlock(string text)
+        {
+            TextBlock textBlock = new TextBlock();
+            textBlock.Text = text;
+
+            return textBlock;
+        }
+
+        static public void SetSettingsWindow()
+        {
+            var settingsPropertyArr = new string[] 
+            { 
+                "Ширина поля",
+                "Высота поля",
+                "Размер ячейки",
+                "Цвет поля",
+                "Цвет текущей ячейки под курсором",
+                "Цвет выделенного слова",
+                "Цвет отгаданных слов",
+                "Случайный цвет отгаданных слов",
+                "Установить настройки по умолчанию" 
+            };
+
+            StackPanelItemList.Clear();
+
+            StackPanelItemList.Add(CreateButton("Назад", ItemEvents.btnExitToMainWindow_Click, horizontalAlignment: Avalonia.Layout.HorizontalAlignment.Right));
+
+            StackPanelItemList.Add(CreateTitleTextBlock("НАСТРОЙКИ", 50));
+
+            for (int i = 0; i < settingsPropertyArr.Length; i++)
+            {
+                StackPanelItemList.Add(CreateSettingsDockPanel(settingsPropertyArr[i], Settings.property[i].ToString()));
+            }
+        }
+
+        static private DockPanel CreateSettingsDockPanel(string text, string score)
+        {
+            DockPanel dockPanel = new DockPanel();
+
+            var textBlock = new TextBlock();
+            textBlock.Text = text;
+
+            var btnLeft = new Button();
+            btnLeft.Content = "<";
+
+            var btnRight = new Button();
+            btnRight.Content = ">";
+
+            var tbScore = new TextBox();
+            tbScore.Text = score;
+
+            dockPanel.Children.Add(textBlock);
+            dockPanel.Children.Add(btnLeft);
+            dockPanel.Children.Add(tbScore);
+            dockPanel.Children.Add(btnRight);
+
+            dockPanel.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right;
+
+            return dockPanel;
         }
     }
 }

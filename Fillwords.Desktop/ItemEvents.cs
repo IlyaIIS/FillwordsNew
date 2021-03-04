@@ -1,4 +1,5 @@
-﻿using Avalonia.Interactivity;
+﻿using Avalonia.Controls;
+using Avalonia.Interactivity;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,17 +20,24 @@ namespace Fillwords.Desktop
 
         static public void btnRecords_Click(object sender, RoutedEventArgs e)
         {
-            Printer.SetErrorWindow("В разработке");
+            Printer.SetRecordsWindow();
         }
 
         static public void btnSettings_Click(object sender, RoutedEventArgs e)
         {
             Printer.SetErrorWindow("В разработке");
+            //Printer.SetSettingsWindow();
         }
 
-        static public void btnExit_Click(object sender, RoutedEventArgs e)
+        static public void btnMainExit_Click(object sender, RoutedEventArgs e)
         {
-            Printer.SetErrorWindow("В разработке");
+            Printer.MainWindow.Close();
+        }
+
+
+        static public void btnExitToMainWindow_Click(object sender, RoutedEventArgs e)
+        {
+            Printer.SetMainWindow();
         }
     }
 }
