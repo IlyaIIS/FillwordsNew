@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using System;
@@ -12,15 +13,27 @@ namespace Fillwords.Desktop
     {
         static public Controls StackPanelItemList { get; private set; }
         static public Window MainWindow { get; private set; }
+        static public Window CurrentWindow { get; private set; }
         delegate void EventDel(object sender, RoutedEventArgs e);
+
+        static Field field;
         static public void SetPrinterParams(Controls stackPanelItemList, Window mainWindow)
         {
             StackPanelItemList = stackPanelItemList;
             MainWindow = mainWindow;
+            CurrentWindow = mainWindow;
         }
 
         static public void SetMainWindow()
         {
+            if (MainWindow != CurrentWindow)
+            {
+                CurrentWindow.Close();
+                MainWindow.Show();
+                CurrentWindow = MainWindow;
+                return;
+            }
+
             int buttonsFontSize = 40;
             int buttonsWidth = 320;
 
@@ -63,7 +76,11 @@ namespace Fillwords.Desktop
 
         static public void SetErrorWindow(string text)
         {
-            StackPanelItemList.Clear();
+            var gameWin = CreateWindow(MainWindow.Width, MainWindow.Height);
+            gameWin.Show();
+            CurrentWindow = gameWin;
+
+            gameWin.Content = new StackPanel();
 
             var tbErrorText = new TextBlock();
             tbErrorText.Text = text;
@@ -73,19 +90,25 @@ namespace Fillwords.Desktop
             tbErrorText.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
             tbErrorText.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
 
-            StackPanelItemList.Add(tbErrorText);
+            ((StackPanel)gameWin.Content).Children.Add(tbErrorText);
         }
 
         static public void SetRecordsWindow()
         {
-            StackPanelItemList.Clear();
+            var gameWin = CreateWindow(MainWindow.Width, MainWindow.Height);
+            MainWindow.Hide();
+            gameWin.Show();
+            CurrentWindow = gameWin;
 
-            StackPanelItemList.Add(CreateButton("Назад", ItemEvents.btnExitToMainWindow_Click, horizontalAlignment : Avalonia.Layout.HorizontalAlignment.Right));
+            StackPanel stackPanel = new StackPanel();
+            gameWin.Content = stackPanel;
 
-            StackPanelItemList.Add(CreateTitleTextBlock("РЕКОРДЫ", 50));
+            stackPanel.Children.Add(CreateButton("Назад", ItemEvents.btnExitToMainWindow_Click, horizontalAlignment : Avalonia.Layout.HorizontalAlignment.Right));
+
+            stackPanel.Children.Add(CreateTitleTextBlock("РЕКОРДЫ", 50));
 
             foreach (var user in DataWorker.UserScoreDict)
-                StackPanelItemList.Add(CreateTextBlock(user.Key + ": " + user.Value));
+                stackPanel.Children.Add(CreateTextBlock(user.Key + ": " + user.Value));
         }
 
         static private TextBlock CreateTextBlock(string text)
@@ -97,6 +120,67 @@ namespace Fillwords.Desktop
         }
 
         static public void SetSettingsWindow()
+        {
+            var gameWin = CreateWindow(MainWindow.Width, MainWindow.Height);
+            MainWindow.Hide();
+            gameWin.Show();
+            CurrentWindow = gameWin;
+
+            StackPanel stackPanel = new StackPanel();
+            gameWin.Content = stackPanel;
+
+            stackPanel.Children.Add(CreateButton("Сохранить", BSaveAndExitToMainMenu, horizontalAlignment: Avalonia.Layout.HorizontalAlignment.Right));
+
+            stackPanel.Children.Add(CreateTitleTextBlock("НАСТРОЙКИ", 50));
+
+            Grid grid = new Grid();
+            SetDefinitionToGrid(grid, 4, 11);
+            stackPanel.Children.Add(grid);
+
+            CreateSettingsItem(0, "Ширина поля", grid, SettingsItemType.Digit);
+            CreateSettingsItem(1, "Высота поля", grid, SettingsItemType.Digit);
+            CreateSettingsItem(2, "Размер ячейки", grid, SettingsItemType.Digit);
+            CreateSettingsItem(3, "Цвет поля", grid, SettingsItemType.Color);
+            CreateSettingsItem(4, "Цвет текущей ячейки под курсором", grid, SettingsItemType.Color);
+            CreateSettingsItem(5, "Цвет выделенного слова", grid, SettingsItemType.Color);
+            CreateSettingsItem(6, "Цвет отгаданных слов", grid, SettingsItemType.Color);
+
+            var tbRandomButton = new TextBlock() { Text = "Случайный цвет отгаданных слов" };
+            Grid.SetRow(tbRandomButton, 7);
+            Grid.SetColumn(tbRandomButton, 0);
+            grid.Children.Add(tbRandomButton);
+            var bRandom = new Button();
+            bRandom.Content = Settings.Property[7].ToString();
+            bRandom.Click += BRandom_Click;
+            Grid.SetRow(bRandom, 7);
+            Grid.SetColumn(bRandom, 2);
+            grid.Children.Add(bRandom);
+
+            var bReset = new Button() { Content = "Установить настройки по умолчанию" };
+            bReset.Click += BReset_Click;
+            Grid.SetRow(bReset, 8);
+            Grid.SetColumn(bReset, 0);
+        }
+
+        private static void BReset_Click(object? sender, RoutedEventArgs e)
+        {
+            Settings.SetDefaultSettings();
+        }
+
+        private static void BRandom_Click(object? sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            Settings.Property[7] = !(button.Content == "True");
+            button.Content = Settings.Property[7].ToString();
+        }
+
+        private static void BSaveAndExitToMainMenu(object? sender, RoutedEventArgs e)
+        {
+            DataWorker.UpdateSettingsFile("settings.txt");
+            Printer.SetMainWindow();
+        }
+
+        static public void SetSettingsWindowOld()
         {
             var settingsPropertyArr = new string[] 
             { 
@@ -111,15 +195,21 @@ namespace Fillwords.Desktop
                 "Установить настройки по умолчанию" 
             };
 
-            StackPanelItemList.Clear();
+            var gameWin = CreateWindow(MainWindow.Width, MainWindow.Height);
+            MainWindow.Hide();
+            gameWin.Show();
+            CurrentWindow = gameWin;
 
-            StackPanelItemList.Add(CreateButton("Назад", ItemEvents.btnExitToMainWindow_Click, horizontalAlignment: Avalonia.Layout.HorizontalAlignment.Right));
+            StackPanel stackPanel = new StackPanel();
+            gameWin.Content = stackPanel;
 
-            StackPanelItemList.Add(CreateTitleTextBlock("НАСТРОЙКИ", 50));
+            stackPanel.Children.Add(CreateButton("Назад", ItemEvents.btnExitToMainWindow_Click, horizontalAlignment: Avalonia.Layout.HorizontalAlignment.Right));
+
+            stackPanel.Children.Add(CreateTitleTextBlock("НАСТРОЙКИ", 50));
 
             for (int i = 0; i < settingsPropertyArr.Length; i++)
             {
-                StackPanelItemList.Add(CreateSettingsDockPanel(settingsPropertyArr[i], Settings.property[i].ToString()));
+                stackPanel.Children.Add(CreateSettingsDockPanel(settingsPropertyArr[i], Settings.Property[i].ToString()));
             }
         }
 
@@ -147,6 +237,82 @@ namespace Fillwords.Desktop
             dockPanel.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right;
 
             return dockPanel;
+        }
+
+        static private SettingsItem CreateSettingsItem(int row, string text, Grid grid, SettingsItemType type)
+        {
+            if (type == SettingsItemType.Digit)
+                return new DigitSettingsItem(row, text, grid);
+            else
+                return new ColorSettingsItem(row, text, grid);
+        }
+
+        static public void SetNewGameWindowStart()
+        {
+            var gameWin = CreateWindow(MainWindow.Width, MainWindow.Height);
+            MainWindow.Hide();
+            gameWin.Show();
+            CurrentWindow = gameWin;
+
+            var grid = new Grid();
+            gameWin.Content = grid;
+
+            var tb = new TextBox();
+            tb.KeyUp += new EventHandler<Avalonia.Input.KeyEventArgs>(ItemEvents.tbEnterEnter);
+
+            grid.Children.Add(new TextBlock() { Text = "Введите имя: " });
+            grid.Children.Add(tb);
+        }
+        static private Window CreateWindow(double width, double height)
+        {
+            var window = new Window();
+            window.Width = width;
+            window.Height = height;
+            window.Closed += new EventHandler(ItemEvents.wCloseAdditionalWindow);
+
+            return window;
+        }
+
+        static public void SetNewGameWindowNext()
+        {
+            field = new Field();
+            field.CreateNewField(Settings.XSize, Settings.YSize, DataWorker.WordsSet);
+
+            var grid = (Grid)CurrentWindow.Content;
+
+            grid.Children.Clear();
+            SetDefinitionToGrid(grid, 2, 1);
+
+            var canvas = new Canvas();
+            grid.Children.Add(canvas);
+            Grid.SetColumn(canvas, 0);
+            Grid.SetRow(canvas, 0);
+
+            SetFieldOnCanvas(canvas);
+        }
+
+        static private void SetDefinitionToGrid(Grid grid, int x, int y)
+        {
+            for (int ii = 0; ii < x; ii++)
+            {
+                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto});
+            }
+            for (int i = 0; i < y; i++)
+            {
+                grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            }
+        }
+
+        static private void SetFieldOnCanvas(Canvas canvas)
+        {
+            for (int y = 0; y < field.YSize; y++)
+            {
+                for (int x = 0; x < field.XSize; x++)
+                {
+                    Cell cell = new Cell(x, y, field.CellLetter[x, y], field.CellColor[x, y], canvas);
+                }
+            }
+            
         }
     }
 }

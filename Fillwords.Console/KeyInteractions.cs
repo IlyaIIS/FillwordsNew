@@ -43,7 +43,7 @@ namespace Fillwords
                 GetUserName();
 
                 Field field = new Field();
-                field.CreateNewField(Settings.xSize, Settings.ySize, new WordsSet(DataWorker.WordsSet.AllWords));
+                field.CreateNewField(Settings.XSize, Settings.YSize, new WordsSet(DataWorker.WordsSet.AllWords));
                 Player.CreateNewPlayer();
                 DoGameActions(field);
             }
@@ -96,8 +96,8 @@ namespace Fillwords
             string[] allWords = DataWorker.WordsSet.AllWords;
             
             Printer.DrawField(field);
-            Printer.DrawFieldItem(0, 0, ColorsSet.ColorsList[Settings.underCursorColor, 0],
-                                        ColorsSet.ColorsList[Settings.underCursorColor, 1], field);
+            Printer.DrawFieldItem(0, 0, ColorsSet.ColorsList[Settings.UnderCursorColor, 0],
+                                        ColorsSet.ColorsList[Settings.UnderCursorColor, 1], field);
             Printer.DrawScore(Player.Score);
             for(int i = 0; i < Player.WordsList.Count; i++)
                 Printer.DrawText(Player.WordsList[i], i);
@@ -254,32 +254,32 @@ namespace Fillwords
         {
             if (position == 0 || position == 1) 
             {
-                if (key.Key == ConsoleKey.LeftArrow && (int)Settings.property[position] > 3)
-                    Settings.property[position] = (int)Settings.property[position] - 1;
-                if (key.Key == ConsoleKey.RightArrow && (int)Settings.property[position] < 15)
-                    Settings.property[position] = (int)Settings.property[position] + 1;
+                if (key.Key == ConsoleKey.LeftArrow && (int)Settings.Property[position] > 3)
+                    Settings.Property[position] = (int)Settings.Property[position] - 1;
+                if (key.Key == ConsoleKey.RightArrow && (int)Settings.Property[position] < 15)
+                    Settings.Property[position] = (int)Settings.Property[position] + 1;
             }
 
             if (position == 2)
             {
-                if (key.Key == ConsoleKey.LeftArrow && (int)Settings.property[position] > 1)
-                    Settings.property[position] = (int)Settings.property[position] - 1;
-                if (key.Key == ConsoleKey.RightArrow && (int)Settings.property[position] < 3)
-                    Settings.property[position] = (int)Settings.property[position] + 1;
+                if (key.Key == ConsoleKey.LeftArrow && (int)Settings.Property[position] > 1)
+                    Settings.Property[position] = (int)Settings.Property[position] - 1;
+                if (key.Key == ConsoleKey.RightArrow && (int)Settings.Property[position] < 3)
+                    Settings.Property[position] = (int)Settings.Property[position] + 1;
             }
 
             if (position >= 3 && position != 7)
             {
                 if (key.Key == ConsoleKey.LeftArrow)
-                    Settings.property[position] = (int)Settings.property[position] - 1;
+                    Settings.Property[position] = (int)Settings.Property[position] - 1;
                 if (key.Key == ConsoleKey.RightArrow)
-                    Settings.property[position] = (int)Settings.property[position] + 1;
+                    Settings.Property[position] = (int)Settings.Property[position] + 1;
             }
 
             if (position == 7)
             {
                 if (key.Key == ConsoleKey.LeftArrow || key.Key == ConsoleKey.RightArrow)
-                    Settings.property[position] = !(bool)Settings.property[position];
+                    Settings.Property[position] = !(bool)Settings.Property[position];
             }
 
             if (position == 8)

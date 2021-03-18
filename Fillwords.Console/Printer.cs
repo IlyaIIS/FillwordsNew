@@ -95,8 +95,8 @@ namespace Fillwords
 
         static public void DrawField(Field field)
         {
-            Console.BackgroundColor = ColorsSet.ColorsList[Settings.fieldColor, 0];
-            Console.ForegroundColor = ColorsSet.ColorsList[Settings.fieldColor, 1];
+            Console.BackgroundColor = ColorsSet.ColorsList[Settings.FieldColor, 0];
+            Console.ForegroundColor = ColorsSet.ColorsList[Settings.FieldColor, 1];
 
             DrawFieldLine("┌", "─", "┬", "┐", field.XSize);
             Console.WriteLine();
@@ -110,8 +110,8 @@ namespace Fillwords
                     Console.BackgroundColor = ColorsSet.ColorsList[field.CellColor[x, y], 0];
                     Console.ForegroundColor = ColorsSet.ColorsList[field.CellColor[x, y], 1];
                     Console.Write(field.CellLetter[x, y]);
-                    Console.BackgroundColor = ColorsSet.ColorsList[Settings.fieldColor, 0];
-                    Console.ForegroundColor = ColorsSet.ColorsList[Settings.fieldColor, 1];
+                    Console.BackgroundColor = ColorsSet.ColorsList[Settings.FieldColor, 0];
+                    Console.ForegroundColor = ColorsSet.ColorsList[Settings.FieldColor, 1];
                     Console.Write(" " + "│");
                 }
                 Console.WriteLine();
@@ -143,13 +143,13 @@ namespace Fillwords
 
         static public void DrawText(string text, int num)
         {
-            Console.SetCursorPosition(Settings.xSize*4 + 2, num + 1);
+            Console.SetCursorPosition(Settings.XSize*4 + 2, num + 1);
             Console.Write(text);
         }
 
         static public void DrawScore(int score)
         {
-            Console.SetCursorPosition(0, Settings.ySize + Settings.ySize *Settings.cellSize + 3);
+            Console.SetCursorPosition(0, Settings.YSize + Settings.YSize * 1 + 3);
             Console.Write("Счёт: " + score);
         }
 
@@ -218,7 +218,7 @@ namespace Fillwords
 
             if (property >= 0 && property <= 2)
             {
-                Console.Write(text + $" < {Settings.property[property]} >   ");
+                Console.Write(text + $" < {Settings.Property[property]} >   ");
             }
             else if (property <= 6)
             {
@@ -226,14 +226,14 @@ namespace Fillwords
                 Console.Write(" <     > ");
 
                 Console.SetCursorPosition(Console.CursorLeft - 6, Console.CursorTop);
-                Console.BackgroundColor = ColorsSet.ColorsList[(int)Settings.property[property], 0];
-                Console.ForegroundColor = ColorsSet.ColorsList[(int)Settings.property[property], 1];
+                Console.BackgroundColor = ColorsSet.ColorsList[(int)Settings.Property[property], 0];
+                Console.ForegroundColor = ColorsSet.ColorsList[(int)Settings.Property[property], 1];
                 Console.Write(" A ");
                 Console.ResetColor();
             }
             else if (property == 7)
             {
-                Console.Write(text + $" < {((bool)Settings.property[7] ? "Да" : "Нет")} >   ");
+                Console.Write(text + $" < {((bool)Settings.Property[7] ? "Да" : "Нет")} >   ");
             }
             else if (property == 8)
             {
@@ -282,8 +282,8 @@ namespace Fillwords
             do
             {
                 randomNum = rnd.Next(ColorsList.Length / ColorsList.Rank);
-            } while (randomNum == Settings.fieldColor || randomNum == Settings.underCursorColor ||
-                                                         randomNum == Settings.pickedWordColor);
+            } while (randomNum == Settings.FieldColor || randomNum == Settings.UnderCursorColor ||
+                                                         randomNum == Settings.PickedWordColor);
 
             return randomNum;
         }

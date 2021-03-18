@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Fillwords.Desktop
     {
         static public void btnStartNewGame_Click(object sender, RoutedEventArgs e)
         {
-            Printer.SetErrorWindow("В разработке");
+            Printer.SetNewGameWindowStart();
         }
 
         static public void btnContinue_Click(object sender, RoutedEventArgs e)
@@ -25,8 +26,7 @@ namespace Fillwords.Desktop
 
         static public void btnSettings_Click(object sender, RoutedEventArgs e)
         {
-            Printer.SetErrorWindow("В разработке");
-            //Printer.SetSettingsWindow();
+            Printer.SetSettingsWindow();
         }
 
         static public void btnMainExit_Click(object sender, RoutedEventArgs e)
@@ -34,10 +34,23 @@ namespace Fillwords.Desktop
             Printer.MainWindow.Close();
         }
 
-
         static public void btnExitToMainWindow_Click(object sender, RoutedEventArgs e)
         {
             Printer.SetMainWindow();
+        }
+
+        static public void wCloseAdditionalWindow(object sender, EventArgs e)
+        {
+            Printer.SetMainWindow();
+        }
+
+        static public void tbEnterEnter(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && ((TextBox)sender).Text != null)
+            {
+                Player.Name = ((TextBox)sender).Text;
+                Printer.SetNewGameWindowNext();
+            }
         }
     }
 }

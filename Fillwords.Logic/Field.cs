@@ -142,7 +142,7 @@ namespace Fillwords
                     wordsLenghtList.Add(wordLenght);
                     WordsList.Add(words.WordsSetList[wordLenght][rnd.Next(words.WordsSetList[wordLenght].Count)]);
                 } while (cellNum > 0);
-                if (cellNum == 0 && WordsList.Count < Settings.wordNumMin) continue;
+                if (cellNum == 0 && WordsList.Count < Settings.WordNumMin) continue;
                 tryNum++;
                 if (tryNum > 10000)
                 {
@@ -163,7 +163,7 @@ namespace Fillwords
                     int y = coordList[step].Y;
                     WordPos[wordNum].Add(coordList[step]);
                     CellLetter[x, y] = letter;
-                    CellColor[x, y] = Settings.fieldColor;
+                    CellColor[x, y] = Settings.FieldColor;
                     step++;
                 }
             }
