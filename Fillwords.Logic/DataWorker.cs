@@ -78,8 +78,8 @@ namespace Fillwords
                 int i = 0;
                 foreach (var word in text)
                 {
-                    if (i != 7) Settings.property[i] = Int32.Parse(word);
-                    else Settings.property[i] = bool.Parse(word);
+                    if (i != 7) Settings.Property[i] = Int32.Parse(word);
+                    else Settings.Property[i] = bool.Parse(word);
                     i++;
                 }
             }
@@ -93,9 +93,9 @@ namespace Fillwords
         static public void UpdateSettingsFile(string path)
         {
             string output = string.Empty;
-            for (int i = 0; i <= Settings.property.lenght; i++)
+            for (int i = 0; i <= Settings.Property.lenght; i++)
             {
-                output += Settings.property[i] + "\n";
+                output += Settings.Property[i] + "\n";
             }
 
             output.Remove(output.Length - 1);

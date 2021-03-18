@@ -4,28 +4,28 @@ namespace Fillwords
 {
     public static class Settings
     {
-        static public int xSize = 10;
-        static public int ySize = 10;
-        static public int cellSize = 1;
-        static public int fieldColor = 0;
-        static public int underCursorColor = 1;
-        static public int pickedWordColor = 2;
-        static public int guessedWordColor = 4;
-        static public bool isRandomGuessedWordColro = true;
+        static public int XSize { get; set; }
+        static public int YSize { get; set; }
+        static public int CellSize { get; set; }
+        static public int FieldColor { get; set; }
+        static public int UnderCursorColor { get; set; }
+        static public int PickedWordColor { get; set; }
+        static public int GuessedWordColor { get; set; }
+        static public bool IsRandomGuessedWordColro { get; set; }
 
-        static public SettingsIndexer property = new SettingsIndexer();
-        static public int wordNumMin = 2;
+        static public SettingsIndexer Property = new SettingsIndexer();
+        static public int WordNumMin = 2;
 
         static public void SetDefaultSettings()
         {
-            xSize = 10;
-            ySize = 10;
-            cellSize = 1;
-            fieldColor = 0;
-            underCursorColor = 1;
-            pickedWordColor = 2;
-            guessedWordColor = 4;
-            isRandomGuessedWordColro = true;
+            XSize = 10;
+            YSize = 10;
+            CellSize = 30;
+            FieldColor = 0;
+            UnderCursorColor = 1;
+            PickedWordColor = 2;
+            GuessedWordColor = 4;
+            IsRandomGuessedWordColro = true;
         }
     }
 
@@ -38,14 +38,14 @@ namespace Fillwords
             {
                 switch (index)
                 {
-                    case 0: return Settings.xSize;
-                    case 1: return Settings.ySize;
-                    case 2: return Settings.cellSize;
-                    case 3: return Settings.fieldColor;
-                    case 4: return Settings.underCursorColor;
-                    case 5: return Settings.pickedWordColor;
-                    case 6: return Settings.guessedWordColor;
-                    case 7: return Settings.isRandomGuessedWordColro;
+                    case 0: return Settings.XSize;
+                    case 1: return Settings.YSize;
+                    case 2: return Settings.CellSize;
+                    case 3: return Settings.FieldColor;
+                    case 4: return Settings.UnderCursorColor;
+                    case 5: return Settings.PickedWordColor;
+                    case 6: return Settings.GuessedWordColor;
+                    case 7: return Settings.IsRandomGuessedWordColro;
                     default: return 0;
                 }
             }
@@ -53,14 +53,14 @@ namespace Fillwords
             {
                 switch (index)
                 {
-                    case 0: Settings.xSize                    = (int)value; break;
-                    case 1: Settings.ySize                    = (int)value; break;
-                    case 2: Settings.cellSize                 = (int)value; break;
-                    case 3: Settings.fieldColor               = (int)value; break;
-                    case 4: Settings.underCursorColor         = (int)value; break;
-                    case 5: Settings.pickedWordColor          = (int)value; break;
-                    case 6: Settings.guessedWordColor         = (int)value; break;
-                    case 7: Settings.isRandomGuessedWordColro = (bool)value; break;
+                    case 0: Settings.XSize                    = (int)value; break;
+                    case 1: Settings.YSize                    = (int)value; break;
+                    case 2: Settings.CellSize                 = (int)value; break;
+                    case 3: Settings.FieldColor               = (int)value; break;
+                    case 4: Settings.UnderCursorColor         = (int)value; break;
+                    case 5: Settings.PickedWordColor          = (int)value; break;
+                    case 6: Settings.GuessedWordColor         = (int)value; break;
+                    case 7: Settings.IsRandomGuessedWordColro = (bool)value; break;
                 }
             }
         }
