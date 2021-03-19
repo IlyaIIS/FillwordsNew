@@ -61,7 +61,6 @@ namespace Fillwords.Desktop
         }
     }
 
-    //Пометка: у параметров настроек пока не добавлен функционал по их изменению
     abstract class SettingsItem
     {
         public SettingsItemType Type { get; private set; }
@@ -79,15 +78,56 @@ namespace Fillwords.Desktop
 
             leftButton = new Button();
             leftButton.Content = "<";
+            leftButton.Tag = row;
+            leftButton.Click += LeftOrRightButton_Click;
             Grid.SetRow(leftButton, row);
             Grid.SetColumn(leftButton, 1);
             grid.Children.Add(leftButton);
 
             rightButton = new Button();
             rightButton.Content = ">";
+            rightButton.Tag = row;
+            rightButton.Click += LeftOrRightButton_Click;
             Grid.SetRow(rightButton, row);
             Grid.SetColumn(rightButton, 3);
             grid.Children.Add(rightButton);
+        }
+
+        private void LeftOrRightButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            int propertyNum = (int)button.Tag;
+            if (button.Content == "<")
+            {
+                Settings.Property[propertyNum] = (int)Settings.Property[propertyNum] - 1;
+            }
+            else
+            {
+                Settings.Property[propertyNum] = (int)Settings.Property[propertyNum] + 1;
+            }
+            UpdateItemsContext((Grid)button.Parent);
+        }
+
+        static public void UpdateItemsContext(Grid grid)
+        {
+            foreach (IControl control in grid.Children)
+            {
+                if (control is TextBox)
+                {
+                    TextBox tb = (TextBox)control;
+                    tb.Text = Settings.Property[(int)tb.Tag].ToString();
+                }
+                else
+                if (control is TextBlock)
+                {
+                    TextBlock tb = (TextBlock)control;
+                    if (tb.Tag != null)
+                    {
+                        ((TextBlock)control).Foreground = ColorsSet.ColorsList[(int)Settings.Property[(int)tb.Tag], 1];
+                        ((TextBlock)control).Background = ColorsSet.ColorsList[(int)Settings.Property[(int)tb.Tag], 0];
+                    }
+                }
+            }
         }
     }
 
@@ -98,9 +138,19 @@ namespace Fillwords.Desktop
         {
             textBox = new TextBox();
             textBox.Text = Settings.Property[row].ToString();
+            textBox.Tag = row;
+            textBox.LostFocus += TextBox_LostFocus;
             Grid.SetRow(textBox, row);
             Grid.SetColumn(textBox, 2);
             grid.Children.Add(textBox);
+        }
+
+        private void TextBox_LostFocus(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            if (Int32.TryParse(tb.Text, out int result))
+                Settings.Property[(int)tb.Tag] = result;
+            tb.Text = Settings.Property[(int)tb.Tag].ToString();
         }
     }
 
@@ -115,6 +165,7 @@ namespace Fillwords.Desktop
             colorBox.TextAlignment = Avalonia.Media.TextAlignment.Center;
             colorBox.Foreground = ColorsSet.ColorsList[(int)Settings.Property[row], 1];
             colorBox.Background = ColorsSet.ColorsList[(int)Settings.Property[row], 0];
+            colorBox.Tag = row;
             Grid.SetRow(colorBox, row);
             Grid.SetColumn(colorBox, 2);
             grid.Children.Add(colorBox);

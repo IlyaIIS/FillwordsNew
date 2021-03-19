@@ -121,7 +121,10 @@ namespace Fillwords.Desktop
 
         static public void SetSettingsWindow()
         {
-            var gameWin = CreateWindow(MainWindow.Width, MainWindow.Height);
+            var gameWin = new Window();
+            gameWin.Width = MainWindow.Width;
+            gameWin.Height = MainWindow.Height;
+            gameWin.Closed += new EventHandler(ItemEvents.wCloseSettingsWindow);
             MainWindow.Hide();
             gameWin.Show();
             CurrentWindow = gameWin;
@@ -129,7 +132,7 @@ namespace Fillwords.Desktop
             StackPanel stackPanel = new StackPanel();
             gameWin.Content = stackPanel;
 
-            stackPanel.Children.Add(CreateButton("Сохранить", BSaveAndExitToMainMenu, horizontalAlignment: Avalonia.Layout.HorizontalAlignment.Right));
+            stackPanel.Children.Add(CreateButton("Назад", ItemEvents.wCloseSettingsWindow, horizontalAlignment: Avalonia.Layout.HorizontalAlignment.Right));
 
             stackPanel.Children.Add(CreateTitleTextBlock("НАСТРОЙКИ", 50));
 
@@ -160,11 +163,13 @@ namespace Fillwords.Desktop
             bReset.Click += BReset_Click;
             Grid.SetRow(bReset, 8);
             Grid.SetColumn(bReset, 0);
+            grid.Children.Add(bReset);
         }
 
         private static void BReset_Click(object? sender, RoutedEventArgs e)
         {
             Settings.SetDefaultSettings();
+            SettingsItem.UpdateItemsContext((Grid)((Button)sender).Parent);
         }
 
         private static void BRandom_Click(object? sender, RoutedEventArgs e)
@@ -172,12 +177,6 @@ namespace Fillwords.Desktop
             Button button = (Button)sender;
             Settings.Property[7] = !(button.Content == "True");
             button.Content = Settings.Property[7].ToString();
-        }
-
-        private static void BSaveAndExitToMainMenu(object? sender, RoutedEventArgs e)
-        {
-            DataWorker.UpdateSettingsFile("settings.txt");
-            Printer.SetMainWindow();
         }
 
         static public void SetSettingsWindowOld()

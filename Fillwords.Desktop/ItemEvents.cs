@@ -52,5 +52,11 @@ namespace Fillwords.Desktop
                 Printer.SetNewGameWindowNext();
             }
         }
+
+        internal static void wCloseSettingsWindow(object? sender, EventArgs e)
+        {
+            DataWorker.UpdateSettingsFile("settings.txt");
+            Printer.SetMainWindow();
+        }
     }
 }
