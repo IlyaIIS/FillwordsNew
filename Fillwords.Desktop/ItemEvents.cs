@@ -11,12 +11,12 @@ namespace Fillwords.Desktop
     {
         static public void btnStartNewGame_Click(object sender, RoutedEventArgs e)
         {
-            Printer.SetNewGameWindowStart();
+            Printer.SetNewGameWindow();
         }
 
         static public void btnContinue_Click(object sender, RoutedEventArgs e)
         {
-            Printer.SetErrorWindow("В разработке");
+            Printer.SetContinueWindow();
         }
 
         static public void btnRecords_Click(object sender, RoutedEventArgs e)
@@ -49,7 +49,7 @@ namespace Fillwords.Desktop
             if (e.Key == Key.Enter && ((TextBox)sender).Text != null)
             {
                 Player.Name = ((TextBox)sender).Text;
-                Printer.SetNewGameWindowNext();
+                Printer.SetGameWindow();
             }
         }
 

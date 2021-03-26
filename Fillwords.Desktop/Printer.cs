@@ -187,7 +187,7 @@ namespace Fillwords.Desktop
                 return new ColorSettingsItem(row, text, grid);
         }
 
-        static public void SetNewGameWindowStart()
+        static public void SetNewGameWindow()
         {
             var gameWin = CreateWindow(MainWindow.Width, MainWindow.Height);
             MainWindow.Hide();
@@ -202,6 +202,22 @@ namespace Fillwords.Desktop
 
             grid.Children.Add(new TextBlock() { Text = "Введите имя: " });
             grid.Children.Add(tb);
+
+            field = new Field();
+            field.CreateNewField(Settings.XSize, Settings.YSize, DataWorker.WordsSet);
+            Player.CreateNewPlayer();
+        }
+
+        // Сохранение игры при закрытии окна
+        private static void GameWin_Closed(object? sender, EventArgs e)
+        {
+            if (Player.WordsList.Count != field.WordsList.Count)
+            {
+                DataWorker.SaveField(field, "field_save.txt");
+                DataWorker.SavePlayer("plyer_save.txt");
+            }
+
+            SetMainWindow();
         }
 
         static private Window CreateWindow(double width, double height)
@@ -214,14 +230,12 @@ namespace Fillwords.Desktop
             return window;
         }
 
-        static public void SetNewGameWindowNext()
+        static public void SetGameWindow()
         {
             CurrentWindow.PointerPressed += GameWin_PointerPressed;
             CurrentWindow.PointerMoved += GameWin_PointerMoved;
             CurrentWindow.PointerReleased += GameWin_PointerReleased;
-
-            field = new Field();
-            field.CreateNewField(Settings.XSize, Settings.YSize, DataWorker.WordsSet);
+            CurrentWindow.Closed += GameWin_Closed;
 
             var grid = (Grid)CurrentWindow.Content;
 
@@ -242,7 +256,7 @@ namespace Fillwords.Desktop
             Grid.SetRow(spRightPanel, 0);
 
             var tbScore = new TextBlock();
-            tbScore.Text = "Очки: 0";
+            tbScore.Text = "Очки: " + Player.Score;
             tbScore.FontSize = 20;
             tbScore.Width = 20 * 15;
             tbScore.Margin = new Thickness(5, 5, 0, 0);
@@ -335,6 +349,31 @@ namespace Fillwords.Desktop
             }
         }
 
+        static public void SetContinueWindow()
+        {
+            if (DataWorker.saveExist("field_save.txt", "plyer_save.txt"))
+            {
+                var gameWin = CreateWindow(MainWindow.Width, MainWindow.Height);
+                MainWindow.Hide();
+                gameWin.Show();
+                CurrentWindow = gameWin;
+
+                var grid = new Grid();
+                gameWin.Content = grid;
+
+                field = DataWorker.LoadField("field_save.txt");
+                Player.CreateNewPlayer();
+                DataWorker.LoadPlayer("plyer_save.txt");
+
+                SetGameWindow();
+                UpdateGuessedWordsList();
+            }
+            else
+            {
+                ShowMessageBox(400,100,"Нет сохранённых игр");
+            }
+        }
+
         static private void ShowMessageBox(int width, int height, string text)
         {
             var window = new Window();
@@ -362,7 +401,6 @@ namespace Fillwords.Desktop
                 grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
             }
         }
-
         static private void SetFieldOnCanvas(Canvas canvas)
         {
             CellsList = new List<Cell>();
@@ -375,7 +413,6 @@ namespace Fillwords.Desktop
             }
             
         }
-
         static private void SetCellsColorFromField()
         {
             foreach(Cell cell in CellsList)
@@ -383,12 +420,10 @@ namespace Fillwords.Desktop
                 cell.Color = field.CellColor[cell.X, cell.Y];
             }
         }
-
         static private void UpdateScore()
         {
             ((TextBlock)((StackPanel)((Grid)CurrentWindow.Content).Children[1]).Children[0]).Text = "Очки: " + Player.Score;
         }
-
         static private void UpdateGuessedWordsList()
         {
             var spWordsList = (StackPanel)((StackPanel)((Grid)CurrentWindow.Content).Children[1]).Children[2];
