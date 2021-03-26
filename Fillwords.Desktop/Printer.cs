@@ -14,6 +14,7 @@ namespace Fillwords.Desktop
         static public Controls StackPanelItemList { get; private set; }
         static public Window MainWindow { get; private set; }
         static public Window CurrentWindow { get; private set; }
+        static public List<Cell> CellsList { get; private set;}
         delegate void EventDel(object sender, RoutedEventArgs e);
 
         static Field field;
@@ -171,71 +172,11 @@ namespace Fillwords.Desktop
             Settings.SetDefaultSettings();
             SettingsItem.UpdateItemsContext((Grid)((Button)sender).Parent);
         }
-
         private static void BRandom_Click(object? sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
             Settings.Property[7] = !(button.Content == "True");
             button.Content = Settings.Property[7].ToString();
-        }
-
-        static public void SetSettingsWindowOld()
-        {
-            var settingsPropertyArr = new string[] 
-            { 
-                "Ширина поля",
-                "Высота поля",
-                "Размер ячейки",
-                "Цвет поля",
-                "Цвет текущей ячейки под курсором",
-                "Цвет выделенного слова",
-                "Цвет отгаданных слов",
-                "Случайный цвет отгаданных слов",
-                "Установить настройки по умолчанию" 
-            };
-
-            var gameWin = CreateWindow(MainWindow.Width, MainWindow.Height);
-            MainWindow.Hide();
-            gameWin.Show();
-            CurrentWindow = gameWin;
-
-            StackPanel stackPanel = new StackPanel();
-            gameWin.Content = stackPanel;
-
-            stackPanel.Children.Add(CreateButton("Назад", ItemEvents.btnExitToMainWindow_Click, horizontalAlignment: Avalonia.Layout.HorizontalAlignment.Right));
-
-            stackPanel.Children.Add(CreateTitleTextBlock("НАСТРОЙКИ", 50));
-
-            for (int i = 0; i < settingsPropertyArr.Length; i++)
-            {
-                stackPanel.Children.Add(CreateSettingsDockPanel(settingsPropertyArr[i], Settings.Property[i].ToString()));
-            }
-        }
-
-        static private DockPanel CreateSettingsDockPanel(string text, string score)
-        {
-            DockPanel dockPanel = new DockPanel();
-
-            var textBlock = new TextBlock();
-            textBlock.Text = text;
-
-            var btnLeft = new Button();
-            btnLeft.Content = "<";
-
-            var btnRight = new Button();
-            btnRight.Content = ">";
-
-            var tbScore = new TextBox();
-            tbScore.Text = score;
-
-            dockPanel.Children.Add(textBlock);
-            dockPanel.Children.Add(btnLeft);
-            dockPanel.Children.Add(tbScore);
-            dockPanel.Children.Add(btnRight);
-
-            dockPanel.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right;
-
-            return dockPanel;
         }
 
         static private SettingsItem CreateSettingsItem(int row, string text, Grid grid, SettingsItemType type)
@@ -262,6 +203,7 @@ namespace Fillwords.Desktop
             grid.Children.Add(new TextBlock() { Text = "Введите имя: " });
             grid.Children.Add(tb);
         }
+
         static private Window CreateWindow(double width, double height)
         {
             var window = new Window();
@@ -274,6 +216,10 @@ namespace Fillwords.Desktop
 
         static public void SetNewGameWindowNext()
         {
+            CurrentWindow.PointerPressed += GameWin_PointerPressed;
+            CurrentWindow.PointerMoved += GameWin_PointerMoved;
+            CurrentWindow.PointerReleased += GameWin_PointerReleased;
+
             field = new Field();
             field.CreateNewField(Settings.XSize, Settings.YSize, DataWorker.WordsSet);
 
@@ -283,11 +229,126 @@ namespace Fillwords.Desktop
             SetDefinitionToGrid(grid, 2, 1);
 
             var canvas = new Canvas();
+            canvas.Width = Settings.XSize * (Settings.CellSize + 5)+5;
+            canvas.Height = Settings.YSize * (Settings.CellSize + 5)+5;
+            canvas.Background = Brushes.LightGray;
             grid.Children.Add(canvas);
             Grid.SetColumn(canvas, 0);
             Grid.SetRow(canvas, 0);
 
+            var spRightPanel = new StackPanel();
+            grid.Children.Add(spRightPanel);
+            Grid.SetColumn(spRightPanel, 1);
+            Grid.SetRow(spRightPanel, 0);
+
+            var tbScore = new TextBlock();
+            tbScore.Text = "Очки: 0";
+            tbScore.FontSize = 20;
+            tbScore.Width = 20 * 15;
+            tbScore.Margin = new Thickness(5, 5, 0, 0);
+            tbScore.Background = Brushes.LightGray;
+            spRightPanel.Children.Add(tbScore);
+
+            var tbWordNow = new TextBlock();
+            tbWordNow.Text = " ";
+            tbWordNow.FontSize = 20;
+            tbWordNow.Width = 20 * 15;
+            tbWordNow.Margin = new Thickness(5, 5, 0, 0);
+            tbWordNow.Background = Brushes.LightGray;
+            spRightPanel.Children.Add(tbWordNow);
+
+            spRightPanel.Children.Add(new StackPanel());
+
             SetFieldOnCanvas(canvas);
+        }
+
+        // Начало выделения слова
+        private static void GameWin_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+        {
+            Cell cell = FindCellByCoords(e.GetPosition((Window)sender));
+            if (cell != null && cell.Color == Settings.FieldColor)
+            {
+                cell.Color = Settings.PickedWordColor;
+                MouseInfo.IsPressed = true;
+                Player.WordNow += cell.Letter;
+                ((TextBlock)((StackPanel)((Grid)CurrentWindow.Content).Children[1]).Children[1]).Text = Player.WordNow;
+                Player.CoordStory = new List<int[]> { new int[] { cell.X, cell.Y } };
+            }
+        }
+        // Процесс выделения слова
+        private static void GameWin_PointerMoved(object? sender, Avalonia.Input.PointerEventArgs e)
+        {
+            Cell cell = FindCellByCoords(e.GetPosition((Window)sender));
+            if (cell != null && MouseInfo.IsPressed && cell.Color == Settings.FieldColor)
+            {
+                cell.Color = Settings.PickedWordColor;
+                Player.WordNow += cell.Letter;
+                ((TextBlock)((StackPanel)((Grid)CurrentWindow.Content).Children[1]).Children[1]).Text = Player.WordNow;
+                Player.CoordStory.Add(new int[] { cell.X, cell.Y });
+            }
+        }
+        // Процесс выделения закончен
+        private static void GameWin_PointerReleased(object? sender, Avalonia.Input.PointerReleasedEventArgs e)
+        {
+            MouseInfo.IsPressed = false;
+            if (Player.WordNow != string.Empty)
+            {
+                Cell cell = FindCellByCoords(e.GetPosition(CurrentWindow));
+                CheckWordNow((cell != null) ? cell.X : 0);
+                SetCellsColorFromField();
+                UpdateScore();
+                UpdateGuessedWordsList();
+                Player.WordNow = string.Empty;
+                ((TextBlock)((StackPanel)((Grid)CurrentWindow.Content).Children[1]).Children[1]).Text = " ";
+                CheckWin();
+            }
+        }
+
+        private static Cell FindCellByCoords(Point coord)
+        {
+            if (CellsList != null)
+                foreach (Cell cell in CellsList)
+                {
+                    if (cell.CubeX <= coord.X && cell.CubeX + Settings.CellSize >= coord.X)
+                        if (cell.CubeY <= coord.Y && cell.CubeY + Settings.CellSize >= coord.Y)
+                            return cell;
+                }
+            return null;
+        }
+
+        static private void CheckWordNow(int x)
+        {
+            if (field.WordsList.Contains(Player.WordNow) &&
+                field.WordPos[field.WordsList.IndexOf(Player.WordNow)][Player.WordNow.Length - 1].X == x)
+            {
+                int color = Settings.IsRandomGuessedWordColro? ColorsSet.GetRandomColor() : Settings.GuessedWordColor;
+                LogicMethods.ActionsIfWordSelected(field, color);
+            } 
+            else
+            {
+                if (field.WordsList.Contains(Player.WordNow))
+                    ShowMessageBox(400, 50, "Попробуйте записать это слово наоборот или найти ещё одно такое же на поле");
+                else if ((DataWorker.WordsSet.AllWords as IList<string>).Contains(Player.WordNow))
+                    ShowMessageBox(400, 50, "Это не одно из слов, которое вам нужно отгодать на данном поле ):");
+                else
+                    ShowMessageBox(400, 50, "Такого слова нет в словаре");
+            }
+        }
+
+        static private void ShowMessageBox(int width, int height, string text)
+        {
+            var window = new Window();
+            window.Width = width;
+            window.Height = height;
+            window.Content = new TextBlock()
+            {
+                Text = text,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            window.Show();
         }
 
         static private void SetDefinitionToGrid(Grid grid, int x, int y)
@@ -304,14 +365,56 @@ namespace Fillwords.Desktop
 
         static private void SetFieldOnCanvas(Canvas canvas)
         {
+            CellsList = new List<Cell>();
             for (int y = 0; y < field.YSize; y++)
             {
                 for (int x = 0; x < field.XSize; x++)
                 {
-                    Cell cell = new Cell(x, y, field.CellLetter[x, y], field.CellColor[x, y], canvas);
+                    CellsList.Add(new Cell(x, y, field.CellLetter[x, y], field.CellColor[x, y], canvas));
                 }
             }
             
+        }
+
+        static private void SetCellsColorFromField()
+        {
+            foreach(Cell cell in CellsList)
+            {
+                cell.Color = field.CellColor[cell.X, cell.Y];
+            }
+        }
+
+        static private void UpdateScore()
+        {
+            ((TextBlock)((StackPanel)((Grid)CurrentWindow.Content).Children[1]).Children[0]).Text = "Очки: " + Player.Score;
+        }
+
+        static private void UpdateGuessedWordsList()
+        {
+            var spWordsList = (StackPanel)((StackPanel)((Grid)CurrentWindow.Content).Children[1]).Children[2];
+            spWordsList.Children.Clear();
+            for (int i = 0; i < Player.WordsList.Count; i++)
+            {
+                spWordsList.Children.Add(new TextBlock()
+                {
+                    Text = Player.WordsList[i],
+                    FontSize = 15,
+                    Width = 20 * 15,
+                    Margin = new Thickness(5, 1, 0, 0),
+                    Background = Brushes.LightGray,
+                    TextAlignment = TextAlignment.Center
+                });
+            }
+        }
+
+        static private void CheckWin()
+        {
+            if (Player.WordsList.Count == field.WordsList.Count)
+            {
+                LogicMethods.ActionsIfWin(field);
+
+                ShowMessageBox(400, 50, "Вы отгодали все слова!");
+            }
         }
     }
 }

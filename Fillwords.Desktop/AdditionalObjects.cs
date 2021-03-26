@@ -7,10 +7,12 @@ using System.Text;
 
 namespace Fillwords.Desktop
 {
-    class Cell
+    public class Cell
     {
         public int X { get; private set; }
         public int Y { get; private set; }
+        public int CubeX { get; private set; }
+        public int CubeY { get; private set; }
         public char Letter { get; private set; }
         private int color;
         public int Color {
@@ -20,7 +22,7 @@ namespace Fillwords.Desktop
             }
             set 
             {
-                color = Color;
+                color = value;
                 pCube.Fill = ColorsSet.ColorsList[color, 0];
                 tbLetter.Foreground = ColorsSet.ColorsList[color, 1];
             } 
@@ -35,26 +37,27 @@ namespace Fillwords.Desktop
             this.color = color;
 
             pCube = new Polygon();
+            pCube.Tag = this;
             pCube.Width = Settings.CellSize;
             pCube.Height = Settings.CellSize;
             pCube.Fill = ColorsSet.ColorsList[color, 0];
 
-            int cubeX = X * Settings.CellSize + X * 5 + 5;
-            int cubeY = Y * Settings.CellSize + Y * 5 + 5;
+            CubeX = X * Settings.CellSize + X * 5 + 5;
+            CubeY = Y * Settings.CellSize + Y * 5 + 5;
 
             pCube.Points = new List<Point>();
-            pCube.Points.Add(new Point(cubeX + Settings.CellSize, cubeY));
-            pCube.Points.Add(new Point(cubeX, cubeY));
-            pCube.Points.Add(new Point(cubeX, cubeY + Settings.CellSize));
-            pCube.Points.Add(new Point(cubeX + Settings.CellSize, cubeY + Settings.CellSize));
+            pCube.Points.Add(new Point(CubeX + Settings.CellSize, CubeY));
+            pCube.Points.Add(new Point(CubeX, CubeY));
+            pCube.Points.Add(new Point(CubeX, CubeY + Settings.CellSize));
+            pCube.Points.Add(new Point(CubeX + Settings.CellSize, CubeY + Settings.CellSize));
 
             tbLetter = new Label();
             tbLetter.Content = Letter.ToString();
             tbLetter.FontSize = Settings.CellSize * 0.9;
             tbLetter.Foreground = ColorsSet.ColorsList[color, 1];
             tbLetter.HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center;
-            Canvas.SetLeft(tbLetter, cubeX + Settings.CellSize * 0.15);
-            Canvas.SetTop(tbLetter, cubeY - Settings.CellSize * 0.2);
+            Canvas.SetLeft(tbLetter, CubeX + Settings.CellSize * 0.15);
+            Canvas.SetTop(tbLetter, CubeY - Settings.CellSize * 0.2);
 
             canvas.Children.Add(pCube);
             canvas.Children.Add(tbLetter);
