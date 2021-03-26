@@ -54,17 +54,8 @@ namespace Fillwords
                     if (Settings.IsRandomGuessedWordColro) color = ColorsSet.GetRandomColor();
                     else                                   color = Settings.GuessedWordColor;
 
-                    for (int i = 0; i < Player.CoordStory.Count; i++)
-                    {
-                        int x = Player.CoordStory[i][0];
-                        int y = Player.CoordStory[i][1];
+                    LogicMethods.ActionsIfWordSelected(field, color);
 
-                        field.CellColor[x, y] = color;
-                        field.CellColor[x, y] = color;
-                    }
-
-                    Player.WordsList.Add(Player.WordNow);
-                    Player.Score += (int)Math.Pow(Player.WordNow.Length, 1.5);
                     Printer.DrawScore(Player.Score);
                 }
                 else

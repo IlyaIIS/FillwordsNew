@@ -8,9 +8,9 @@ namespace Fillwords
         static public int Y { get; set; }
         static public int PreX { get; set; }
         static public int PreY { get; set; }
-        static public List<int[]> CoordStory = new List<int[]>();
+        static public List<int[]> CoordStory { get; set; } = new List<int[]>();
         static public string WordNow { get; set; }
-        static public List<string> WordsList = new List<string>();
+        static public List<string> WordsList { get; set; } = new List<string>();
         static public int Score { get; set; }
         static public string Name { get; set; }
 
@@ -20,9 +20,9 @@ namespace Fillwords
             Y = 0;
             PreX = 0;
             PreY = 0;
-            CoordStory.RemoveRange(0, CoordStory.Count);
+            CoordStory.Clear();
             WordNow = string.Empty;
-            WordsList.RemoveRange(0, WordsList.Count);
+            WordsList.Clear();
             Score = 0;
         }
     }

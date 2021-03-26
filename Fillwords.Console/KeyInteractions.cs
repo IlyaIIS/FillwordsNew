@@ -159,13 +159,7 @@ namespace Fillwords
                 //Проверка на победу
                 if (Player.WordsList.Count == field.WordsList.Count)
                 {
-                    if (DataWorker.UserScoreDict.ContainsKey(Player.Name))
-                        DataWorker.UserScoreDict[Player.Name] += Player.Score;
-                    else
-                        DataWorker.UserScoreDict.Add(Player.Name, Player.Score);
-
-                    DataWorker.UpdateUsetScoreFile("users_score.txt");
-                    if (field.IsLoaded) DataWorker.DeliteSave("field_save.txt", "plyer_save.txt");
+                    LogicMethods.ActionsIfWin(field);
 
                     Printer.DrawPopupWindow("Вы отгодали все слова!");
                     Console.ReadKey(true);
