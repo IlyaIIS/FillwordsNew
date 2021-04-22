@@ -146,7 +146,6 @@ namespace Fillwords
                 tryNum++;
                 if (tryNum > 10000)
                 {
-                    //Printer.DrawPopupWindow("Словарь \"words.txt\" слишком маленький. Добавьте больше слов");
                     Environment.Exit(0);
                 }
             } while (cellNum > 0);

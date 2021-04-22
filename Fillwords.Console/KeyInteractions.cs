@@ -4,7 +4,7 @@ namespace Fillwords
 {
     class KeyInteractions
     {
-        static public void DoMenuActions()
+        public static void DoMenuActions()
         {
             ConsoleKeyInfo key;
             int position = 1;
@@ -34,7 +34,7 @@ namespace Fillwords
             SelectMenuItem(position);
         }
 
-        static private void SelectMenuItem(int position)
+        private static void SelectMenuItem(int position)
         {
             Console.Clear();
 
@@ -74,7 +74,7 @@ namespace Fillwords
             if (position == 5) Environment.Exit(0);
         }
 
-        static private void GetUserName()
+        private static void GetUserName()
         {
             string userName;
 
@@ -91,7 +91,7 @@ namespace Fillwords
             Console.Clear();
         }
 
-        static private void DoGameActions(Field field)
+        private static void DoGameActions(Field field)
         {
             string[] allWords = DataWorker.WordsSet.AllWords;
             
@@ -104,7 +104,7 @@ namespace Fillwords
 
             ConsoleKeyInfo key;
             bool isEnter = false;
-            bool isCheat = false;
+            bool isCheatActive = false;
 
             do
             {
@@ -129,7 +129,6 @@ namespace Fillwords
                     if (isEnter)
                     {
                         PrinterLogicMetods.BrakeFilling(field);
-                        
                         Printer.DrawText(new string(' ', Console.WindowWidth - (field.XSize * 4 + 2)), Player.WordsList.Count);
 
                         isEnter = false;
@@ -169,36 +168,44 @@ namespace Fillwords
                 //Если С (чит)
                 if (key.Key == ConsoleKey.C)
                 {
-                    isCheat = true;
-                    Random rnd = new Random();
-                    int randomNum = rnd.Next(field.WordsList.Count);
-
-                    for (int ii = 0; ii < field.WordsList[randomNum].Length; ii++)
-                    {
-                        int x = field.WordPos[randomNum][ii].X;
-                        int y = field.WordPos[randomNum][ii].Y;
-                        Printer.DrawFieldItem(x, y, ConsoleColor.Yellow, ConsoleColor.Red, field);
-                    }
+                    isCheatActive = true;
+                    ActivateCheat(field);
                 }
                 else
-                if (isCheat)
+                if (isCheatActive)
                 {
-                    isCheat = false;
-                    for (int i = 0; i < field.WordsList.Count; i++)
-                        for (int ii = 0; ii < field.WordsList[i].Length; ii++)
-                        {
-                            int x = field.WordPos[i][ii].X;
-                            int y = field.WordPos[i][ii].Y;
-                            Printer.DrawFieldItem(x, y, ColorsSet.ColorsList[field.CellColor[x, y],0], ColorsSet.ColorsList[field.CellColor[x, y],1], field);
-                        }
-
-                    Printer.DrawFieldItem(Player.X, Player.Y, ConsoleColor.DarkGray, ConsoleColor.White, field);
+                    isCheatActive = false;
+                    DeactivateCheat(field);
                 }
-
             } while (true);
         }
 
-        static private void MoveCursorInField(Field field, ConsoleKeyInfo key)
+        private static void ActivateCheat(Field field)
+        {
+            Random rnd = new Random();
+            int randomNum = rnd.Next(field.WordsList.Count);
+
+            for (int ii = 0; ii < field.WordsList[randomNum].Length; ii++)
+            {
+                int x = field.WordPos[randomNum][ii].X;
+                int y = field.WordPos[randomNum][ii].Y;
+                Printer.DrawFieldItem(x, y, ConsoleColor.Yellow, ConsoleColor.Red, field);
+            }
+        }
+        private static void DeactivateCheat(Field field)
+        {
+            for (int i = 0; i < field.WordsList.Count; i++)
+                for (int ii = 0; ii < field.WordsList[i].Length; ii++)
+                {
+                    int x = field.WordPos[i][ii].X;
+                    int y = field.WordPos[i][ii].Y;
+                    Printer.DrawFieldItem(x, y, ColorsSet.ColorsList[field.CellColor[x, y], 0], ColorsSet.ColorsList[field.CellColor[x, y], 1], field);
+                }
+
+            Printer.DrawFieldItem(Player.X, Player.Y, ConsoleColor.DarkGray, ConsoleColor.White, field);
+        }
+
+        private static void MoveCursorInField(Field field, ConsoleKeyInfo key)
         {
             if (Player.X < field.XSize - 1 && (key.Key == ConsoleKey.RightArrow || key.Key == ConsoleKey.D)) Player.X++;
             if (Player.Y > 0               && (key.Key == ConsoleKey.UpArrow    || key.Key == ConsoleKey.W)) Player.Y--;
@@ -206,7 +213,7 @@ namespace Fillwords
             if (Player.Y < field.YSize - 1 && (key.Key == ConsoleKey.DownArrow  || key.Key == ConsoleKey.S)) Player.Y++;
         }
 
-        static private void DoSettingsActions()
+        private static void DoSettingsActions()
         {
             Printer.DrawSettings();
 
@@ -238,13 +245,13 @@ namespace Fillwords
             DataWorker.UpdateSettingsFile("settings.txt");
         }
 
-        static private void MoveCursorInSettingsMeny(ref int position, ConsoleKeyInfo key)
+        private static void MoveCursorInSettingsMeny(ref int position, ConsoleKeyInfo key)
         {
             if (key.Key == ConsoleKey.UpArrow && position >= 1) position--;
             if (key.Key == ConsoleKey.DownArrow && position < 8) position++;
         }
 
-        static private void ChangeSetting(int position, ConsoleKeyInfo key)
+        private static void ChangeSetting(int position, ConsoleKeyInfo key)
         {
             if (position == 0 || position == 1) 
             {

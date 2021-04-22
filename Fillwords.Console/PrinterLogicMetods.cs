@@ -6,7 +6,7 @@ namespace Fillwords
     public static class PrinterLogicMetods
     {
         //Действия при движении курсора по полю
-        static public void PlayerMoveAction(Field field, bool isEnter)
+        public static void PlayerMoveAction(Field field, bool isEnter)
         {
             if (!isEnter)
             {
@@ -28,7 +28,7 @@ namespace Fillwords
         }
 
         //Действия при нажатии Enter
-        static public void PlayerEnterAction(Field field, ref bool isEnter, string[] allWords)
+        public static void PlayerEnterAction(Field field, ref bool isEnter, string[] allWords)
         {
             if (!isEnter)
             {
@@ -51,7 +51,7 @@ namespace Fillwords
                     field.WordPos[field.WordsList.IndexOf(Player.WordNow)][Player.WordNow.Length - 1].X == Player.X)
                 {
                     int color;
-                    if (Settings.IsRandomGuessedWordColro) color = ColorsSet.GetRandomColor();
+                    if (Settings.IsRandomGuessedWordColro) color = ColorsSet.GetRandomColorIndex();
                     else                                   color = Settings.GuessedWordColor;
 
                     LogicMethods.ActionsIfWordSelected(field, color);
@@ -76,7 +76,7 @@ namespace Fillwords
         }
 
         //Прекращение заполнения слова
-        static public void BrakeFilling(Field field)
+        public static void BrakeFilling(Field field)
         {
             for (int i = 0; i < Player.CoordStory.Count; i++)
             {

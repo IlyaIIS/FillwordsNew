@@ -41,7 +41,7 @@ namespace Fillwords
             }
         }
 
-        static public void ReadUserScoreFromFile(string path)
+        public static void ReadUserScoreFromFile(string path)
         {
             if (File.Exists(path))
             {
@@ -56,7 +56,7 @@ namespace Fillwords
             }
         }
 
-        static public void UpdateUsetScoreFile(string path)
+        public static void UpdateUsetScoreFile(string path)
         {
             string output = string.Empty;
             foreach (var user in UserScoreDict)
@@ -69,7 +69,7 @@ namespace Fillwords
             File.WriteAllText(path, output);
         }
 
-        static public void ReadSettingsFromFile(string path)
+        public static void ReadSettingsFromFile(string path)
         {
             if (File.Exists(path))
             {
@@ -90,7 +90,7 @@ namespace Fillwords
             }    
         }
 
-        static public void UpdateSettingsFile(string path)
+        public static void UpdateSettingsFile(string path)
         {
             string output = string.Empty;
             for (int i = 0; i <= Settings.Property.lenght; i++)
@@ -103,7 +103,7 @@ namespace Fillwords
             File.WriteAllText(path, output);
         }
 
-        static public void SaveField(Field field, string path)
+        public static void SaveField(Field field, string path)
         {
             string data = string.Empty;
 
@@ -141,7 +141,7 @@ namespace Fillwords
             File.WriteAllText(path, data);
         }
 
-        static public Field LoadField(string path)
+        public static Field LoadField(string path)
         {
             Field field = new Field();
             field.IsLoaded = true;
@@ -228,7 +228,7 @@ namespace Fillwords
             return field;
         }
 
-        static public void SavePlayer(string path)
+        public static void SavePlayer(string path)
         {
             string data = string.Empty;
 
@@ -244,7 +244,7 @@ namespace Fillwords
             File.WriteAllText(path, data);
         }
 
-        static public void LoadPlayer(string path)
+        public static void LoadPlayer(string path)
         {
             string[] data = File.ReadAllLines(path);
 
@@ -270,18 +270,18 @@ namespace Fillwords
             }
         }
 
-        static public void DeliteSave(string path1, string path2)
+        public static void DeliteSave(string path1, string path2)
         {
             File.Delete(path1);
             File.Delete(path2);
         }
 
-        static public bool saveExist(string path1, string path2)
+        public static bool saveExist(string path1, string path2)
         {
             return File.Exists(path1) && File.Exists(path2);
         }
 
-        static private ConsoleColor GetColorFromName(string text)
+        private static ConsoleColor GetColorFromName(string text)
         {
             switch (text)
             {

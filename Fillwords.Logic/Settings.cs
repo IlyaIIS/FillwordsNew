@@ -5,19 +5,19 @@ namespace Fillwords
 {
     public static class Settings
     {
-        static public int XSize { get; set; }
-        static public int YSize { get; set; }
-        static public int CellSize { get; set; }
-        static public int FieldColor { get; set; }
-        static public int UnderCursorColor { get; set; }
-        static public int PickedWordColor { get; set; }
-        static public int GuessedWordColor { get; set; }
-        static public bool IsRandomGuessedWordColro { get; set; }
+        public static int XSize { get; set; }
+        public static int YSize { get; set; }
+        public static int CellSize { get; set; }
+        public static int FieldColor { get; set; }
+        public static int UnderCursorColor { get; set; }
+        public static int PickedWordColor { get; set; }
+        public static int GuessedWordColor { get; set; }
+        public static bool IsRandomGuessedWordColro { get; set; }
 
-        static public SettingsIndexer Property = new SettingsIndexer();
-        static public int WordNumMin = 2;
+        public static SettingsIndexer Property = new SettingsIndexer();
+        public static int WordNumMin = 2;
 
-        static public void SetDefaultSettings()
+        public static void SetDefaultSettings()
         {
             XSize = 10;
             YSize = 10;
@@ -29,8 +29,8 @@ namespace Fillwords
             IsRandomGuessedWordColro = true;
         }
 
-        static public readonly List<int> MinValueOfProperty = new List<int>() { 3, 3, 5, 0, 0, 0, 0 };
-        static public readonly List<int> MaxValueOfProperty = new List<int>() { 15, 15, 60, 14, 14, 14, 14 };
+        public static readonly List<int> MinValueOfProperty = new List<int>() { 3, 3, 5, 0, 0, 0, 0 };
+        public static readonly List<int> MaxValueOfProperty = new List<int>() { 15, 15, 60, 14, 14, 14, 14 };
     }
 
     public class SettingsIndexer

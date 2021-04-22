@@ -50,7 +50,7 @@ namespace Fillwords.Tests
                 yield return new TestCaseData(new int[] { 2 }, 1, 1, new bool[,] { { false, false, false }, { true,  true, false }, { false, false, false } });
                 yield return new TestCaseData(new int[] { 1 }, 1, 1, new bool[,] { { false, false, false }, { false, true, false }, { false, true,  false } });
                 yield return new TestCaseData(new int[] { 2, 3 }, 1, 1, new bool[,] { { false, true, false }, { true, true, false }, { false, false, false } });
-                yield return new TestCaseData(new int[] { 1, 3, 4 }, 1, 1, new bool[,] { { false, true, false }, { true, true, true }, { false, false, false } });
+                yield return new TestCaseData(new int[] { 2, 3, 4 }, 1, 1, new bool[,] { { false, true, false }, { true, true, true }, { false, false, false } });
                 yield return new TestCaseData(new int[] { 1, 2, 3, 4 }, 1, 1, new bool[,] { { false, true, false }, { true, true, true }, { false, true, false } });
             }
         }

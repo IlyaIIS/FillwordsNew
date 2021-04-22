@@ -5,7 +5,7 @@ namespace Fillwords.Desktop
 {
     public class ColorsSet
     {
-        static public dynamic[,] ColorsList =
+        public static ISolidColorBrush[,] ColorsList =
         {
             { Brushes.Black    , Brushes.White },
             { Brushes.DarkGray , Brushes.White },
@@ -24,7 +24,7 @@ namespace Fillwords.Desktop
             { Brushes.Yellow   , Brushes.Black }
         };
 
-        public Brush this[int index1, int index2]
+        public ISolidColorBrush this[int index1, int index2]
         {
             get
             {

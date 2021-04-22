@@ -111,7 +111,7 @@ namespace Fillwords.Desktop
             UpdateItemsContext((Grid)button.Parent);
         }
 
-        static public void UpdateItemsContext(Grid grid)
+        public static void UpdateItemsContext(Grid grid)
         {
             foreach (IControl control in grid.Children)
             {

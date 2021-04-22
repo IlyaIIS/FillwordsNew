@@ -6,6 +6,7 @@ namespace Fillwords
     {
         static void Main(string[] args)
         {
+            Console.CursorVisible = false;
             DataWorker.ReadWordsFromFile("words.txt");
             DataWorker.ReadUserScoreFromFile("users_score.txt");
             DataWorker.ReadSettingsFromFile("settings.txt");

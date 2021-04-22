@@ -4,17 +4,17 @@ namespace Fillwords
 {
     public static class Player
     {
-        static public int X { get; set; }
-        static public int Y { get; set; }
-        static public int PreX { get; set; }
-        static public int PreY { get; set; }
-        static public List<int[]> CoordStory { get; set; } = new List<int[]>();
-        static public string WordNow { get; set; }
-        static public List<string> WordsList { get; set; } = new List<string>();
-        static public int Score { get; set; }
-        static public string Name { get; set; }
+        public static int X { get; set; }
+        public static int Y { get; set; }
+        public static int PreX { get; set; }
+        public static int PreY { get; set; }
+        public static List<int[]> CoordStory { get; set; } = new List<int[]>();
+        public static string WordNow { get; set; }
+        public static List<string> WordsList { get; set; } = new List<string>();
+        public static int Score { get; set; }
+        public static string Name { get; set; }
 
-        static public void CreateNewPlayer()
+        public static void CreateNewPlayer()
         {
             X = 0;
             Y = 0;

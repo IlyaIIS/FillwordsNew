@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Fillwords
 {
-    static public class LogicMethods
+    public static class LogicMethods
     {
-        static public void ActionsIfWordSelected(Field field, int color)
+        public static void ActionsIfWordSelected(Field field, int color)
         {
             for (int i = 0; i < Player.CoordStory.Count; i++)
             {
@@ -21,7 +21,7 @@ namespace Fillwords
             Player.Score += (int)Math.Pow(Player.WordNow.Length, 1.5);
         }
 
-        static public void ActionsIfWin(Field field)
+        public static void ActionsIfWin(Field field)
         {
             if (DataWorker.UserScoreDict.ContainsKey(Player.Name))
                 DataWorker.UserScoreDict[Player.Name] += Player.Score;

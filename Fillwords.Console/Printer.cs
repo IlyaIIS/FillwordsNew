@@ -4,7 +4,7 @@ namespace Fillwords
 {
     class Printer
     {
-        static public void DrawMenu()
+        public static void DrawMenu()
         {
             Console.Clear();
             Console.SetWindowSize(120, 35);
@@ -15,7 +15,7 @@ namespace Fillwords
             DrawMenuItem(4, false);
             DrawMenuItem(5, false);
         }
-        static void DrawTitle()
+        private static void DrawTitle()
         {
             string indent = GetIndent(68);
 
@@ -34,7 +34,7 @@ namespace Fillwords
             Console.ResetColor();
         }
 
-        static public void DrawMenuItem(int num, bool isHighlighting)
+        public static void DrawMenuItem(int num, bool isHighlighting)
         {
             string indent = GetIndent(47);
 
@@ -88,12 +88,12 @@ namespace Fillwords
             Console.ResetColor();
         }
 
-        static public string GetIndent(int textSize)
+        public static string GetIndent(int textSize)
         {
             return new string(' ', (Console.WindowWidth - textSize) / 2);
         }
 
-        static public void DrawField(Field field)
+        public static void DrawField(Field field)
         {
             Console.BackgroundColor = ColorsSet.ColorsList[Settings.FieldColor, 0];
             Console.ForegroundColor = ColorsSet.ColorsList[Settings.FieldColor, 1];
@@ -125,14 +125,14 @@ namespace Fillwords
             Console.ResetColor();
         }
 
-        static void DrawFieldLine(string sign1, string sign2, string sign3, string sign4, int num)
+        private static void DrawFieldLine(string sign1, string sign2, string sign3, string sign4, int num)
         {
             Console.Write(sign1 + sign2 + sign2 + sign2);
             for (int i = 0; i < num - 1; i++) Console.Write(sign3 + sign2 + sign2 + sign2);
             Console.Write(sign4);
         }
 
-        static public void DrawFieldItem(int x, int y, ConsoleColor color1, ConsoleColor color2, Field field)
+        public static void DrawFieldItem(int x, int y, ConsoleColor color1, ConsoleColor color2, Field field)
         {
             Console.SetCursorPosition(x * 4 + 2, y * 2 + 1);
             Console.BackgroundColor = color1;
@@ -141,19 +141,19 @@ namespace Fillwords
             Console.ResetColor();
         }
 
-        static public void DrawText(string text, int num)
+        public static void DrawText(string text, int num)
         {
             Console.SetCursorPosition(Settings.XSize*4 + 2, num + 1);
             Console.Write(text);
         }
 
-        static public void DrawScore(int score)
+        public static void DrawScore(int score)
         {
             Console.SetCursorPosition(0, Settings.YSize + Settings.YSize * 1 + 3);
             Console.Write("Счёт: " + score);
         }
 
-        static public void DrawPopupWindow(string text)
+        public static void DrawPopupWindow(string text)
         {
             Console.SetCursorPosition(Console.WindowWidth/2 - text.Length / 2 - 1, Console.WindowHeight / 2 - 1);
             Console.Write("╔" + new string('═', text.Length) + "╗");
@@ -163,7 +163,7 @@ namespace Fillwords
             Console.Write("╚" + new string('═', text.Length) + "╝");
         }
 
-        static public void DrawTableOfRecords()
+        public static void DrawTableOfRecords()
         {
             DrawMenuItem(3, true);
             foreach(var user in DataWorker.UserScoreDict)
@@ -172,7 +172,7 @@ namespace Fillwords
             }
         }
 
-        static public void DrawSettings()
+        public static void DrawSettings()
         {
             Console.SetCursorPosition(0, 0);
             DrawSettringsItem(0, true);
@@ -186,7 +186,7 @@ namespace Fillwords
             DrawSettringsItem(8, false);
         }
 
-        static public void DrawSettringsItem(int property, bool isHighlighting)
+        public static void DrawSettringsItem(int property, bool isHighlighting)
         {
             if (!isHighlighting) Console.ForegroundColor = ConsoleColor.DarkGray;
 
@@ -247,7 +247,7 @@ namespace Fillwords
 
     public class ColorsSet
     {
-        static public dynamic[,] ColorsList =
+        public static dynamic[,] ColorsList =
         {
             { ConsoleColor.Black    , ConsoleColor.White },
             { ConsoleColor.DarkGray , ConsoleColor.White },
@@ -274,7 +274,7 @@ namespace Fillwords
             }
         }
 
-        public static int GetRandomColor()
+        public static int GetRandomColorIndex()
         {
             Random rnd = new Random();
             int randomNum;

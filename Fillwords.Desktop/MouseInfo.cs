@@ -4,9 +4,8 @@ using System.Text;
 
 namespace Fillwords
 {
-    static public class MouseInfo
+    public static class MouseInfo
     {
-        static private bool isPressed = false;
-        static public bool IsPressed { get => isPressed; set => isPressed = value; }
+        public static bool IsPressed { get; set; } = false;
     }
 }

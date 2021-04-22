@@ -7,44 +7,44 @@ using System.Text;
 
 namespace Fillwords.Desktop
 {
-    static public class ItemEvents
+    public static class ItemEvents
     {
-        static public void btnStartNewGame_Click(object sender, RoutedEventArgs e)
+        public static void btnStartNewGame_Click(object sender, RoutedEventArgs e)
         {
             Printer.SetNewGameWindow();
         }
 
-        static public void btnContinue_Click(object sender, RoutedEventArgs e)
+        public static void btnContinue_Click(object sender, RoutedEventArgs e)
         {
             Printer.SetContinueWindow();
         }
 
-        static public void btnRecords_Click(object sender, RoutedEventArgs e)
+        public static void btnRecords_Click(object sender, RoutedEventArgs e)
         {
             Printer.SetRecordsWindow();
         }
 
-        static public void btnSettings_Click(object sender, RoutedEventArgs e)
+        public static void btnSettings_Click(object sender, RoutedEventArgs e)
         {
             Printer.SetSettingsWindow();
         }
 
-        static public void btnMainExit_Click(object sender, RoutedEventArgs e)
+        public static void btnMainExit_Click(object sender, RoutedEventArgs e)
         {
             Printer.MainWindow.Close();
         }
 
-        static public void btnExitToMainWindow_Click(object sender, RoutedEventArgs e)
+        public static void btnExitToMainWindow_Click(object sender, RoutedEventArgs e)
         {
             Printer.SetMainWindow();
         }
 
-        static public void wCloseAdditionalWindow(object sender, EventArgs e)
+        public static void wAdditionalWindow_Close(object sender, EventArgs e)
         {
             Printer.SetMainWindow();
         }
 
-        static public void tbEnterEnter(object sender, KeyEventArgs e)
+        public static void tbEnter_Enter(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter && ((TextBox)sender).Text != null)
             {
@@ -53,7 +53,7 @@ namespace Fillwords.Desktop
             }
         }
 
-        internal static void wCloseSettingsWindow(object? sender, EventArgs e)
+        public static void wSettingsWindow_Close(object? sender, EventArgs e)
         {
             DataWorker.UpdateSettingsFile("settings.txt");
             Printer.SetMainWindow();
