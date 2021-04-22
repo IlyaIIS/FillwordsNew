@@ -2,8 +2,6 @@
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Fillwords.Desktop
 {

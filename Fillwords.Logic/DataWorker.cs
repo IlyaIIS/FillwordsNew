@@ -8,7 +8,7 @@ namespace Fillwords
     public static class DataWorker
     {
         static public WordsSet WordsSet { get; private set; }
-        static public Dictionary<string, int> UserScoreDict = new Dictionary<string, int>();
+        static public Dictionary<string, int> UserScoreDict { get; private set; } = new Dictionary<string, int>();
 
         static public void ReadWordsFromFile(string path)
         {
@@ -17,7 +17,6 @@ namespace Fillwords
                 var text = File.ReadLines(path);
                 if (text.Count() > 0)
                 {
-
                     string[] output = new string[text.Count()];
 
                     int i = 0;
@@ -49,6 +48,8 @@ namespace Fillwords
 
                 foreach (var word in text)
                     UserScoreDict.Add(word.Split(' ')[0], Convert.ToInt32(word.Split(' ')[1]));
+
+                UserScoreDict = UserScoreDict.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
             }
             else
             {
@@ -114,9 +115,9 @@ namespace Fillwords
             data += "\n";
 
             data += "|/";
-            foreach (List<MyVector2> wordCoord in field.WordPos)
+            foreach (List<MyVectorInt> wordCoord in field.WordPos)
             {
-                foreach (MyVector2 coord in wordCoord)
+                foreach (MyVectorInt coord in wordCoord)
                 {
                     data += coord.X + " " + coord.Y + "_/";
                 }
@@ -145,43 +146,49 @@ namespace Fillwords
         {
             Field field = new Field();
             field.IsLoaded = true;
+
             string[] data = File.ReadAllLines(path);
 
-            //список слов
-            foreach (char letter in data[0])
-            {
-                if (letter != ' ')
-                {
-                    field.WordsList[field.WordsList.Count - 1] += letter;
-                }
-                else
-                {
-                    field.WordsList.Add(string.Empty);
-                }
-            }
+            ReadAndSetFieldWordList(field, data[0]);
+            ReadAndSetFieldWordCoords(field, data[1]);
+            ReadAndSetFieldSize(field, data[2]);
+            ReadAndSetFieldLetters(field, data[3]);
+            ReadAndSetFieldColors(field, data[4]);
 
-            //координаты слов
+            return field;
+        }
+
+        private static void ReadAndSetFieldWordList(Field field, string line)
+        {
+            foreach (char letter in line)
+                if (letter != ' ')
+                    field.WordsList[field.WordsList.Count - 1] += letter;
+                else
+                    field.WordsList.Add(string.Empty);
+        }
+        private static void ReadAndSetFieldWordCoords(Field field, string line)
+        {
             string localStr = string.Empty;
-            foreach (char letter in data[1])
+            foreach (char letter in line)
             {
                 if (letter == '|')
                 {
-                    field.WordPos.Add(new List<MyVector2>());
+                    field.WordPos.Add(new List<MyVectorInt>());
                 }
                 else if (letter == '/')
                 {
-                    field.WordPos[field.WordPos.Count - 1].Add(new MyVector2());
+                    field.WordPos[field.WordPos.Count - 1].Add(new MyVectorInt());
                 }
                 else if (letter == '_')
                 {
-                    MyVector2 coord = field.WordPos[field.WordPos.Count - 1][field.WordPos[field.WordPos.Count - 1].Count - 1];
+                    MyVectorInt coord = field.WordPos[field.WordPos.Count - 1][field.WordPos[field.WordPos.Count - 1].Count - 1];
                     coord.Y = Convert.ToInt32(localStr);
                     field.WordPos[field.WordPos.Count - 1][field.WordPos[field.WordPos.Count - 1].Count - 1] = coord;
                     localStr = string.Empty;
                 }
                 else if (letter == ' ')
                 {
-                    MyVector2 coord = field.WordPos[field.WordPos.Count - 1][field.WordPos[field.WordPos.Count - 1].Count - 1];
+                    MyVectorInt coord = field.WordPos[field.WordPos.Count - 1][field.WordPos[field.WordPos.Count - 1].Count - 1];
                     coord.Y = -10;
                     coord.X = Convert.ToInt32(localStr);
                     field.WordPos[field.WordPos.Count - 1][field.WordPos[field.WordPos.Count - 1].Count - 1] = coord;
@@ -192,26 +199,29 @@ namespace Fillwords
                     localStr += letter;
                 }
             }
-
-            //размер поля
-            string[] local = data[2].Split(' ');
+        }
+        private static void ReadAndSetFieldSize(Field field, string line)
+        {
+            string[] local = line.Split(' ');
             field.XSize = Convert.ToInt32(local[0]);
             field.YSize = Convert.ToInt32(local[1]);
-
-            //буквы поля
+        }
+        private static void ReadAndSetFieldLetters(Field field, string line)
+        {
             field.CellLetter = new char[field.XSize, field.YSize];
-            for (int i = 0; i < data[3].Length; i++)
+            for (int i = 0; i < line.Length; i++)
             {
-                field.CellLetter[i % field.XSize, i / field.XSize] = data[3][i];
+                field.CellLetter[i % field.XSize, i / field.XSize] = line[i];
             }
-
-            //Цвета поля
+        }
+        private static void ReadAndSetFieldColors(Field field, string line)
+        {
             field.CellColor = new int[field.XSize, field.YSize];
-            localStr = string.Empty;
+            string localStr = string.Empty;
             int score = 0;
-            for (int i = 0; i < data[4].Length; i++)
+            for (int i = 0; i < line.Length; i++)
             {
-                if (data[4][i] == ' ')
+                if (line[i] == ' ')
                 {
                     int x = score % field.XSize;
                     int y = score / field.XSize;
@@ -221,11 +231,9 @@ namespace Fillwords
                 }
                 else
                 {
-                    localStr += data[4][i];
+                    localStr += line[i];
                 }
             }
-
-            return field;
         }
 
         public static void SavePlayer(string path)
@@ -276,84 +284,43 @@ namespace Fillwords
             File.Delete(path2);
         }
 
-        public static bool saveExist(string path1, string path2)
+        public static bool IsSaveExist(string path1, string path2)
         {
             return File.Exists(path1) && File.Exists(path2);
         }
-
-        private static ConsoleColor GetColorFromName(string text)
-        {
-            switch (text)
-            {
-                case "White":
-                    return ConsoleColor.White;
-                case "Black":
-                    return ConsoleColor.Black;
-                case "DarkGray":
-                    return ConsoleColor.DarkGray;
-                case "Gray":
-                    return ConsoleColor.Gray;
-                case "DarkBlue":
-                    return ConsoleColor.DarkBlue;
-                case "DarkGreen":
-                    return ConsoleColor.DarkGreen;
-                case "DarkCyan":
-                    return ConsoleColor.DarkCyan;
-                case "DarkRed":
-                    return ConsoleColor.DarkRed;
-                case "DarkMagenta":
-                    return ConsoleColor.DarkMagenta;
-                case "DarkYellow":
-                    return ConsoleColor.DarkYellow;
-                case "Blue":
-                    return ConsoleColor.Blue; 
-                case "Green":
-                    return ConsoleColor.Green;
-                case "Cyan":
-                    return ConsoleColor.Cyan;
-                case "Red":
-                    return ConsoleColor.Red;
-                case "Magenta":
-                    return ConsoleColor.Magenta;
-                case "Yellow":
-                    return ConsoleColor.Yellow;
-                default:
-                    throw new Exception("Несуществующий цвет");
-            }
-        } 
     }
 
     public struct WordsSet
     {
-        public string[] AllWords { get; private set; }             //Массив из всех слов
-        public List<List<string>> WordsSetList { get; private set; }  //Массив массивов слов, сгрупперованных по длине
+        public string[] AllWords { get; private set; }                
+        public List<List<string>> WordsSetList { get; private set; }  //Список списков слов, сгрупперованных по длине
         public WordsSet(string[] input)
         {
-            this.AllWords = input;
-            this.WordsSetList = new List<List<string>>();
+            AllWords = input;
+            WordsSetList = new List<List<string>>();
             {
                 for (int i = 0; i < input.Length; i++)
                 {
-                    if (input[i].Length > this.WordsSetList.Count - 1)
+                    if (input[i].Length > WordsSetList.Count - 1)
                     {
                         do
                         {
-                            this.WordsSetList.Add(new List<string>());
-                        } while (this.WordsSetList.Count - 1 < input[i].Length);
+                            WordsSetList.Add(new List<string>());
+                        } while (WordsSetList.Count - 1 < input[i].Length);
                     }
 
-                    this.WordsSetList[input[i].Length].Add(input[i]);
+                    WordsSetList[input[i].Length].Add(input[i]);
                 }
             }
         }
     }
 
-    public struct MyVector2
+    public struct MyVectorInt
     {
         public int X { get; set; }
         public int Y { get; set; }
 
-        public MyVector2(int xInput, int yInput)
+        public MyVectorInt(int xInput, int yInput)
         {
             X = xInput;
             Y = yInput;

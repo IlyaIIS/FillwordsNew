@@ -49,7 +49,7 @@ namespace Fillwords
             }
             if (position == 2)
             {
-                if (DataWorker.saveExist("field_save.txt", "plyer_save.txt"))
+                if (DataWorker.IsSaveExist("field_save.txt", "plyer_save.txt"))
                 {
                     Field field = DataWorker.LoadField("field_save.txt");
                     Player.CreateNewPlayer();
@@ -115,69 +115,80 @@ namespace Fillwords
 
                 MoveCursorInField(field,  key);
 
-                //Если курсор сдвинулся
                 if (Player.PreX != Player.X || Player.PreY != Player.Y)
                     PrinterLogicMetods.PlayerMoveAction(field, isEnter);
 
-                //Действия при enter или space
                 if (key.Key == ConsoleKey.Enter || key.Key == ConsoleKey.Spacebar)
                     PrinterLogicMetods.PlayerEnterAction(field, ref isEnter, allWords);
 
-                //Действия при esc
-                if (key.Key == ConsoleKey.Escape)
-                {
-                    if (isEnter)
-                    {
-                        PrinterLogicMetods.BrakeFilling(field);
-                        Printer.DrawText(new string(' ', Console.WindowWidth - (field.XSize * 4 + 2)), Player.WordsList.Count);
+                bool isBreak;
+                IfEscapePressed(field, key, ref isEnter, out isBreak);
+                if (isBreak) break;
 
-                        isEnter = false;
-                    }
-                    else
-                    {
-                        Printer.DrawPopupWindow("Вы уверены, что хотите выйти? (прогресс будет сохранён)");
+                CheckWin(field, out isBreak);
+                if (isBreak) break;
 
-                        key = Console.ReadKey(true);
-                        if (key.Key == ConsoleKey.Enter || key.Key == ConsoleKey.Spacebar)
-                        {
-                            DataWorker.SaveField(field, "field_save.txt");
-                            DataWorker.SavePlayer("plyer_save.txt");
-                            break;
-                        }
-                        else
-                        {
-                            Console.Clear();
-                            Printer.DrawField(field);
-                            Printer.DrawFieldItem(Player.X, Player.Y, ConsoleColor.DarkGray, ConsoleColor.White, field);
-                            for (int i = 0; i < Player.WordsList.Count; i++)
-                                Printer.DrawText(Player.WordsList[i], i);
-                        }
-                    }
-                }
-
-                //Проверка на победу
-                if (Player.WordsList.Count == field.WordsList.Count)
-                {
-                    LogicMethods.ActionsIfWin(field);
-
-                    Printer.DrawPopupWindow("Вы отгодали все слова!");
-                    Console.ReadKey(true);
-                    break;
-                }
-
-                //Если С (чит)
+                //Чит
                 if (key.Key == ConsoleKey.C)
                 {
                     isCheatActive = true;
                     ActivateCheat(field);
                 }
-                else
-                if (isCheatActive)
+                else if (isCheatActive)
                 {
                     isCheatActive = false;
                     DeactivateCheat(field);
                 }
             } while (true);
+        }
+        private static void IfEscapePressed(Field field,ConsoleKeyInfo key, ref bool isEnter, out bool isBreak)
+        {
+            isBreak = false;
+
+            if (key.Key == ConsoleKey.Escape)
+            {
+                if (isEnter)
+                {
+                    PrinterLogicMetods.BrakeFilling(field);
+                    Printer.DrawText(new string(' ', Console.WindowWidth - (field.XSize * 4 + 2)), Player.WordsList.Count);
+
+                    isEnter = false;
+                }
+                else
+                {
+                    Printer.DrawPopupWindow("Вы уверены, что хотите выйти? (прогресс будет сохранён)");
+
+                    key = Console.ReadKey(true);
+                    if (key.Key == ConsoleKey.Enter || key.Key == ConsoleKey.Spacebar)
+                    {
+                        DataWorker.SaveField(field, "field_save.txt");
+                        DataWorker.SavePlayer("plyer_save.txt");
+                        isBreak = true;
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Printer.DrawField(field);
+                        Printer.DrawFieldItem(Player.X, Player.Y, ConsoleColor.DarkGray, ConsoleColor.White, field);
+                        for (int i = 0; i < Player.WordsList.Count; i++)
+                            Printer.DrawText(Player.WordsList[i], i);
+                    }
+                }
+            }
+        }
+        private static void CheckWin(Field field, out bool isBreak)
+        {
+            isBreak = false;
+
+            if (Player.WordsList.Count == field.WordsList.Count)
+            {
+                LogicMethods.ActionsIfWin(field);
+
+                Printer.DrawPopupWindow("Вы отгодали все слова!");
+                Console.ReadKey(true);
+
+                isBreak = true;
+            }
         }
 
         private static void ActivateCheat(Field field)
@@ -195,12 +206,14 @@ namespace Fillwords
         private static void DeactivateCheat(Field field)
         {
             for (int i = 0; i < field.WordsList.Count; i++)
+            {
                 for (int ii = 0; ii < field.WordsList[i].Length; ii++)
                 {
                     int x = field.WordPos[i][ii].X;
                     int y = field.WordPos[i][ii].Y;
                     Printer.DrawFieldItem(x, y, ColorsSet.ColorsList[field.CellColor[x, y], 0], ColorsSet.ColorsList[field.CellColor[x, y], 1], field);
                 }
+            }
 
             Printer.DrawFieldItem(Player.X, Player.Y, ConsoleColor.DarkGray, ConsoleColor.White, field);
         }

@@ -8,7 +8,7 @@ namespace Fillwords
         Random rnd = new Random();
         
         public List<string> WordsList { get; set; }              //лист слов на поле
-        public List<List<MyVector2>> WordPos { get; set; }       //лист координат каждой буквы каждого слова
+        public List<List<MyVectorInt>> WordPos { get; set; }     //лист координат каждой буквы каждого слова
         public int XSize { get; set; }
         public int YSize { get; set; }                           //размер поля
         public char[,] CellLetter { get; set; }                  //поле букв
@@ -18,7 +18,7 @@ namespace Fillwords
         public Field()
         {
             WordsList = new List<string>();
-            WordPos = new List<List<MyVector2>>();
+            WordPos = new List<List<MyVectorInt>>();
             IsLoaded = false;
         }
 
@@ -29,19 +29,31 @@ namespace Fillwords
             CellLetter = new char[XSize, YSize];
             CellColor = new int[XSize, YSize];
 
-            //создание поля свободных ячеек
+            bool[,] preField = CreateFieldOfFreeCells();
+            var coordList = new List<MyVectorInt>();
+
+            FillFieldWithWordTemplates(preField, coordList);
+            BreakWormIntoWords(words);
+            FillFieldWithWords(coordList);
+        }
+        private bool[,] CreateFieldOfFreeCells()
+        {
             bool[,] preField = new bool[XSize + 2, YSize + 2];
             for (int y = 0; y <= YSize + 1; y++)
                 for (int x = 0; x <= XSize + 1; x++)
-                    if (x == XSize + 1 || y == 0 || x == 0 || y == YSize + 1) preField[x, y] = false;
-                    else preField[x, y] = true;
+                    if (x == XSize + 1 || y == 0 || x == 0 || y == YSize + 1) 
+                        preField[x, y] = false;
+                    else                                                      
+                        preField[x, y] = true;
 
-            //Заполнение поля шаблонами слов
-            MyVector2 starcCoord = GetStartCoord();
+            return preField;
+        }
+        private void FillFieldWithWordTemplates(bool[,] preField, List<MyVectorInt> coordList)
+        {
+            MyVectorInt starcCoord = GetStartCoord();
             int dir = GetStartDirection(starcCoord.X, starcCoord.Y, preField);
 
             int[,] numField = new int[XSize, YSize];
-            var coordList = new List<MyVector2>();
             int openCellNum = XSize * YSize;
             int actionMod = 0;
             {
@@ -54,10 +66,10 @@ namespace Fillwords
                         preField[x, y] = false;
                         openCellNum--;
                         numField[x - 1, y - 1] = XSize * YSize - openCellNum;
-                        coordList.Add(new MyVector2( x - 1, y - 1 ));
+                        coordList.Add(new MyVectorInt(x - 1, y - 1));
                     }
 
-                    MyVector2 coordLocal = GetNextCellCoord(x, y, dir);
+                    MyVectorInt coordLocal = GetNextCellCoord(x, y, dir);
 
                     if (!preField[coordLocal.X, coordLocal.Y])
                     {
@@ -77,15 +89,15 @@ namespace Fillwords
                         {
                             if (rnd.Next(3) == 0) actionMod = 0;
 
-                            MyVector2 coordNext = GetNextCellCoord(x, y, dir);
-                            MyVector2 coordNext2 = GetNextCellCoord(coordNext.X, coordNext.Y, (oldDir + 1) % 4 + 1);
+                            MyVectorInt coordNext = GetNextCellCoord(x, y, dir);
+                            MyVectorInt coordNext2 = GetNextCellCoord(coordNext.X, coordNext.Y, (oldDir + 1) % 4 + 1);
 
                             if (preField[coordNext2.X, coordNext2.Y])
                             {
                                 preField[coordNext.X, coordNext.Y] = false;
                                 openCellNum -= 1;
                                 numField[coordNext.X - 1, coordNext.Y - 1] = XSize * YSize - openCellNum;
-                                coordList.Add(new MyVector2( coordNext.X - 1, coordNext.Y - 1 ));
+                                coordList.Add(new MyVectorInt(coordNext.X - 1, coordNext.Y - 1));
                                 x = coordNext2.X;
                                 y = coordNext2.Y;
                                 dir = (oldDir + 1) % 4 + 1;
@@ -103,8 +115,9 @@ namespace Fillwords
                     }
                 }
             }
-
-            //Разбиение червяка на слова
+        }
+        private void BreakWormIntoWords(WordsSet words)
+        {
             int cellNum;
             List<int> wordsLenghtList;
             int tryNum = 0;
@@ -120,7 +133,7 @@ namespace Fillwords
 
                 do
                 {
-                    int wordLenght = 0;
+                    int wordLenght;
                     int i = 0;
                     do
                     {
@@ -130,7 +143,7 @@ namespace Fillwords
                             wordLenght = 0;
                             break;
                         }
-                        wordLenght = rnd.Next(Math.Min(wordsLenghtNum.Count - 1, cellNum) - 2)+3;
+                        wordLenght = rnd.Next(Math.Min(wordsLenghtNum.Count - 1, cellNum) - 2) + 3;
                         if (wordLenght < 5 || wordLenght > 8) wordLenght = rnd.Next(Math.Min(wordsLenghtNum.Count - 1, cellNum) - 2) + 3;
                         if (wordLenght < 5 || wordLenght > 8) wordLenght = rnd.Next(Math.Min(wordsLenghtNum.Count - 1, cellNum) - 2) + 3;
                     } while (wordsLenghtNum[wordLenght] == 0);
@@ -143,18 +156,17 @@ namespace Fillwords
                     WordsList.Add(words.WordsSetList[wordLenght][rnd.Next(words.WordsSetList[wordLenght].Count)]);
                 } while (cellNum > 0);
                 if (cellNum == 0 && WordsList.Count < Settings.WordNumMin) continue;
-                tryNum++;
-                if (tryNum > 10000)
-                {
-                    Environment.Exit(0);
-                }
-            } while (cellNum > 0);
 
-            //Заполнение словами поля
+                tryNum++;
+                if (tryNum > 10000) Environment.Exit(0);
+            } while (cellNum > 0);
+        }
+        private void FillFieldWithWords(List<MyVectorInt> coordList)
+        {
             int step = 0;
-            for(int wordNum = 0; wordNum < WordsList.Count; wordNum++)
+            for (int wordNum = 0; wordNum < WordsList.Count; wordNum++)
             {
-                WordPos.Add(new List<MyVector2>());
+                WordPos.Add(new List<MyVectorInt>());
                 for (int letterNum = 0; letterNum < WordsList[wordNum].Length; letterNum++)
                 {
                     char letter = WordsList[wordNum][letterNum];
@@ -168,9 +180,9 @@ namespace Fillwords
             }
         }
 
-        private MyVector2 GetStartCoord()
+        private MyVectorInt GetStartCoord()
         {
-            MyVector2 output = new MyVector2();
+            MyVectorInt output = new MyVectorInt();
             if (rnd.Next(2) == 0)
             {
                 if (rnd.Next(2) == 0)
@@ -227,9 +239,9 @@ namespace Fillwords
             return output;
         }
 
-        private MyVector2 GetNextCellCoord(int x, int y, int dir)
+        private MyVectorInt GetNextCellCoord(int x, int y, int dir)
         {
-            return new MyVector2( x + (-(dir - 2) % 2), y + ((dir - 3) % 2) );
+            return new MyVectorInt( x + (-(dir - 2) % 2), y + ((dir - 3) % 2) );
         }
     }
 }

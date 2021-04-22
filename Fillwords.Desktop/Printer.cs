@@ -332,7 +332,7 @@ namespace Fillwords.Desktop
             if (field.WordsList.Contains(Player.WordNow) &&
                 field.WordPos[field.WordsList.IndexOf(Player.WordNow)][Player.WordNow.Length - 1].X == x)
             {
-                int color = Settings.IsRandomGuessedWordColro? ColorsSet.GetRandomColor() : Settings.GuessedWordColor;
+                int color = Settings.IsRandomGuessedWordColor? ColorsSet.GetRandomColor() : Settings.GuessedWordColor;
                 LogicMethods.ActionsIfWordSelected(field, color);
             } 
             else
@@ -348,7 +348,7 @@ namespace Fillwords.Desktop
 
         public static void SetContinueWindow()
         {
-            if (DataWorker.saveExist("field_save.txt", "plyer_save.txt"))
+            if (DataWorker.IsSaveExist("field_save.txt", "plyer_save.txt"))
             {
                 var gameWin = CreateWindow(MainWindow.Width, MainWindow.Height);
                 MainWindow.Hide();

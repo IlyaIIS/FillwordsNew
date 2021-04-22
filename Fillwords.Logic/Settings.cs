@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Fillwords
 {
@@ -12,10 +11,12 @@ namespace Fillwords
         public static int UnderCursorColor { get; set; }
         public static int PickedWordColor { get; set; }
         public static int GuessedWordColor { get; set; }
-        public static bool IsRandomGuessedWordColro { get; set; }
+        public static bool IsRandomGuessedWordColor { get; set; }
 
-        public static SettingsIndexer Property = new SettingsIndexer();
-        public static int WordNumMin = 2;
+        public static SettingsIndexer Property { get; private set; } = new SettingsIndexer();
+        public static readonly int[] MinValueOfProperty = new int[] { 3, 3, 5, 0, 0, 0, 0 };
+        public static readonly int[] MaxValueOfProperty = new int[] { 15, 15, 60, 14, 14, 14, 14 };
+        public static int WordNumMin { get; private set; } = 2;
 
         public static void SetDefaultSettings()
         {
@@ -26,11 +27,8 @@ namespace Fillwords
             UnderCursorColor = 1;
             PickedWordColor = 2;
             GuessedWordColor = 4;
-            IsRandomGuessedWordColro = true;
+            IsRandomGuessedWordColor = true;
         }
-
-        public static readonly List<int> MinValueOfProperty = new List<int>() { 3, 3, 5, 0, 0, 0, 0 };
-        public static readonly List<int> MaxValueOfProperty = new List<int>() { 15, 15, 60, 14, 14, 14, 14 };
     }
 
     public class SettingsIndexer
@@ -49,7 +47,7 @@ namespace Fillwords
                     case 4: return Settings.UnderCursorColor;
                     case 5: return Settings.PickedWordColor;
                     case 6: return Settings.GuessedWordColor;
-                    case 7: return Settings.IsRandomGuessedWordColro;
+                    case 7: return Settings.IsRandomGuessedWordColor;
                     default: return 0;
                 }
             }
@@ -68,12 +66,12 @@ namespace Fillwords
                             case 4: Settings.UnderCursorColor = (int)value; break;
                             case 5: Settings.PickedWordColor = (int)value; break;
                             case 6: Settings.GuessedWordColor = (int)value; break;
-                            case 7: Settings.IsRandomGuessedWordColro = (bool)value; break;
+                            case 7: Settings.IsRandomGuessedWordColor = (bool)value; break;
                         }
                     }
                 }
                 else if (index == 7)
-                    Settings.IsRandomGuessedWordColro = (bool)value;
+                    Settings.IsRandomGuessedWordColor = (bool)value;
             }
         }
     }

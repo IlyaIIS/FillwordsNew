@@ -51,7 +51,7 @@ namespace Fillwords
                     field.WordPos[field.WordsList.IndexOf(Player.WordNow)][Player.WordNow.Length - 1].X == Player.X)
                 {
                     int color;
-                    if (Settings.IsRandomGuessedWordColro) color = ColorsSet.GetRandomColorIndex();
+                    if (Settings.IsRandomGuessedWordColor) color = ColorsSet.GetRandomColorIndex();
                     else                                   color = Settings.GuessedWordColor;
 
                     LogicMethods.ActionsIfWordSelected(field, color);
