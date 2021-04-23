@@ -247,7 +247,7 @@ namespace Fillwords
 
     public class ColorsSet
     {
-        public static dynamic[,] ColorsList =
+        public static ConsoleColor[,] ColorsList =
         {
             { ConsoleColor.Black    , ConsoleColor.White },
             { ConsoleColor.DarkGray , ConsoleColor.White },

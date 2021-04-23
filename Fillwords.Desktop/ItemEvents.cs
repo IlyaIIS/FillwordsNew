@@ -53,7 +53,7 @@ namespace Fillwords.Desktop
 
         public static void wSettingsWindow_Close(object? sender, EventArgs e)
         {
-            DataWorker.UpdateSettingsFile("settings.txt");
+            DataWorker.UpdateSettingsFile(DataWorker.SettingsSavePath);
             Printer.SetMainWindow();
         }
     }

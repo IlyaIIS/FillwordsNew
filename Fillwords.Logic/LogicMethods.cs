@@ -26,8 +26,12 @@ namespace Fillwords
             else
                 DataWorker.UserScoreDict.Add(Player.Name, Player.Score);
 
-            DataWorker.UpdateUsetScoreFile("users_score.txt");
-            if (field.IsLoaded) DataWorker.DeliteSave("field_save.txt", "plyer_save.txt");
+            DataWorker.UpdateUsetScoreFile(DataWorker.UserScoreSavePath);
+            if (field.IsLoaded)
+            {
+                DataWorker.DeleteSave(DataWorker.FieldSavePath);
+                DataWorker.DeleteSave(DataWorker.PlayerSavePath);
+            }
         }
     }
 }

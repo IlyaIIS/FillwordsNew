@@ -7,9 +7,9 @@ namespace Fillwords
         static void Main(string[] args)
         {
             Console.CursorVisible = false;
-            DataWorker.ReadWordsFromFile("words.txt");
-            DataWorker.ReadUserScoreFromFile("users_score.txt");
-            DataWorker.ReadSettingsFromFile("settings.txt");
+            DataWorker.ReadWordsFromFile(DataWorker.WordsDictionaryPath);
+            DataWorker.ReadUserScoreFromFile(DataWorker.UserScoreSavePath);
+            DataWorker.ReadSettingsFromFile(DataWorker.SettingsSavePath);
 
             //Главный цикл
             do

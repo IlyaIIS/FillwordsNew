@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Fillwords
 {
-    public static class PrinterLogicMetods
+    public static class AdditionalPrinterMetods
     {
         //Действия при движении курсора по полю
         public static void PlayerMoveAction(Field field, bool isEnter)

@@ -9,6 +9,11 @@ namespace Fillwords
     {
         static public WordsSet WordsSet { get; private set; }
         static public Dictionary<string, int> UserScoreDict { get; private set; } = new Dictionary<string, int>();
+        static public readonly string UserScoreSavePath = "users_score.txt";
+        static public readonly string FieldSavePath = "field_save.txt";
+        static public readonly string PlayerSavePath = "player_save.txt";
+        static public readonly string WordsDictionaryPath = "words.txt";
+        static public readonly string SettingsSavePath = "settings.txt";
 
         static public void ReadWordsFromFile(string path)
         {
@@ -278,15 +283,14 @@ namespace Fillwords
             }
         }
 
-        public static void DeliteSave(string path1, string path2)
+        public static void DeleteSave(string path)
         {
-            File.Delete(path1);
-            File.Delete(path2);
+            File.Delete(path);
         }
 
-        public static bool IsSaveExist(string path1, string path2)
+        public static bool IsSaveExist(string path1)
         {
-            return File.Exists(path1) && File.Exists(path2);
+            return File.Exists(path1);
         }
     }
 

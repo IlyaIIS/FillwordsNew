@@ -40,8 +40,9 @@ namespace Fillwords.Desktop
             do
             {
                 randomNum = rnd.Next(ColorsList.Length / ColorsList.Rank);
-            } while (randomNum == Settings.FieldColor || randomNum == Settings.UnderCursorColor ||
-                                                         randomNum == Settings.PickedWordColor);
+            } while (randomNum == Settings.FieldColor || 
+                     randomNum == Settings.UnderCursorColor ||
+                     randomNum == Settings.PickedWordColor);
 
             return randomNum;
         }

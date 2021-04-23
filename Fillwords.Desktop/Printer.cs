@@ -210,8 +210,8 @@ namespace Fillwords.Desktop
         {
             if (Player.WordsList.Count != field.WordsList.Count)
             {
-                DataWorker.SaveField(field, "field_save.txt");
-                DataWorker.SavePlayer("plyer_save.txt");
+                DataWorker.SaveField(field, DataWorker.FieldSavePath);
+                DataWorker.SavePlayer(DataWorker.PlayerSavePath);
             }
 
             SetMainWindow();
@@ -240,8 +240,8 @@ namespace Fillwords.Desktop
             SetDefinitionToGrid(grid, 2, 1);
 
             var canvas = new Canvas();
-            canvas.Width = Settings.XSize * (Settings.CellSize + 5) + 5;
-            canvas.Height = Settings.YSize * (Settings.CellSize + 5) + 5;
+            canvas.Width = field.XSize * (Settings.CellSize + 5) + 5;
+            canvas.Height = field.YSize * (Settings.CellSize + 5) + 5;
             canvas.Background = Brushes.LightGray;
             grid.Children.Add(canvas);
             Grid.SetColumn(canvas, 0);
@@ -348,7 +348,7 @@ namespace Fillwords.Desktop
 
         public static void SetContinueWindow()
         {
-            if (DataWorker.IsSaveExist("field_save.txt", "plyer_save.txt"))
+            if (DataWorker.IsSaveExist(DataWorker.FieldSavePath) && DataWorker.IsSaveExist(DataWorker.PlayerSavePath))
             {
                 var gameWin = CreateWindow(MainWindow.Width, MainWindow.Height);
                 MainWindow.Hide();
@@ -358,9 +358,9 @@ namespace Fillwords.Desktop
                 var grid = new Grid();
                 gameWin.Content = grid;
 
-                field = DataWorker.LoadField("field_save.txt");
+                field = DataWorker.LoadField(DataWorker.FieldSavePath);
                 Player.CreateNewPlayer();
-                DataWorker.LoadPlayer("plyer_save.txt");
+                DataWorker.LoadPlayer(DataWorker.PlayerSavePath);
 
                 SetGameWindow();
                 UpdateGuessedWordsList();

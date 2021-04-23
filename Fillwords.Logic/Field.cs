@@ -50,15 +50,15 @@ namespace Fillwords
         }
         private void FillFieldWithWordTemplates(bool[,] preField, List<MyVectorInt> coordList)
         {
-            MyVectorInt starcCoord = GetStartCoord();
-            int dir = GetStartDirection(starcCoord.X, starcCoord.Y, preField);
+            MyVectorInt startCoord = GetStartCoord();
+            int dir = GetStartDirection(startCoord.X, startCoord.Y, preField);
 
             int[,] numField = new int[XSize, YSize];
             int openCellNum = XSize * YSize;
-            int actionMod = 0;
+            bool isGoBack = false;
             {
-                int x = starcCoord.X;
-                int y = starcCoord.Y;
+                int x = startCoord.X;
+                int y = startCoord.Y;
                 while (openCellNum != 0)
                 {
                     if (preField[x, y])
@@ -77,17 +77,17 @@ namespace Fillwords
                         dir = FindDirection(x, y, preField);
                         if (dir == 0)
                             if (openCellNum > 0)
-                                throw new Exception("На поле остались пустые ячейки, до которыйх невозможно добраться");
+                                throw new Exception("На поле остались пустые ячейки, до которых невозможно добраться");
                             else
                                 break;
 
-                        if (actionMod == 0)
+                        if (isGoBack == false)
                         {
-                            if (rnd.Next(3) == 0) actionMod = 1;
+                            if (rnd.Next(3) == 0) isGoBack = true;
                         }
-                        else if (actionMod == 1)
+                        else if (isGoBack == true)
                         {
-                            if (rnd.Next(3) == 0) actionMod = 0;
+                            if (rnd.Next(3) == 0) isGoBack = false;
 
                             MyVectorInt coordNext = GetNextCellCoord(x, y, dir);
                             MyVectorInt coordNext2 = GetNextCellCoord(coordNext.X, coordNext.Y, (oldDir + 1) % 4 + 1);
@@ -104,7 +104,7 @@ namespace Fillwords
                             }
                             else
                             {
-                                actionMod = 0;
+                                isGoBack = false;
                             }
                         }
                     }

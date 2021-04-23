@@ -49,11 +49,11 @@ namespace Fillwords
             }
             if (position == 2)
             {
-                if (DataWorker.IsSaveExist("field_save.txt", "plyer_save.txt"))
+                if (DataWorker.IsSaveExist(DataWorker.FieldSavePath) && DataWorker.IsSaveExist(DataWorker.PlayerSavePath))
                 {
-                    Field field = DataWorker.LoadField("field_save.txt");
+                    Field field = DataWorker.LoadField(DataWorker.FieldSavePath);
                     Player.CreateNewPlayer();
-                    DataWorker.LoadPlayer("plyer_save.txt");
+                    DataWorker.LoadPlayer(DataWorker.PlayerSavePath);
                     DoGameActions(field);
                 }
                 else
@@ -116,10 +116,10 @@ namespace Fillwords
                 MoveCursorInField(field,  key);
 
                 if (Player.PreX != Player.X || Player.PreY != Player.Y)
-                    PrinterLogicMetods.PlayerMoveAction(field, isEnter);
+                    AdditionalPrinterMetods.PlayerMoveAction(field, isEnter);
 
                 if (key.Key == ConsoleKey.Enter || key.Key == ConsoleKey.Spacebar)
-                    PrinterLogicMetods.PlayerEnterAction(field, ref isEnter, allWords);
+                    AdditionalPrinterMetods.PlayerEnterAction(field, ref isEnter, allWords);
 
                 bool isBreak;
                 IfEscapePressed(field, key, ref isEnter, out isBreak);
@@ -149,7 +149,7 @@ namespace Fillwords
             {
                 if (isEnter)
                 {
-                    PrinterLogicMetods.BrakeFilling(field);
+                    AdditionalPrinterMetods.BrakeFilling(field);
                     Printer.DrawText(new string(' ', Console.WindowWidth - (field.XSize * 4 + 2)), Player.WordsList.Count);
 
                     isEnter = false;
@@ -161,8 +161,8 @@ namespace Fillwords
                     key = Console.ReadKey(true);
                     if (key.Key == ConsoleKey.Enter || key.Key == ConsoleKey.Spacebar)
                     {
-                        DataWorker.SaveField(field, "field_save.txt");
-                        DataWorker.SavePlayer("plyer_save.txt");
+                        DataWorker.SaveField(field, DataWorker.FieldSavePath);
+                        DataWorker.SavePlayer(DataWorker.PlayerSavePath);
                         isBreak = true;
                     }
                     else
@@ -255,7 +255,7 @@ namespace Fillwords
 
             } while (key.Key != ConsoleKey.Escape);
 
-            DataWorker.UpdateSettingsFile("settings.txt");
+            DataWorker.UpdateSettingsFile(DataWorker.SettingsSavePath);
         }
 
         private static void MoveCursorInSettingsMeny(ref int position, ConsoleKeyInfo key)

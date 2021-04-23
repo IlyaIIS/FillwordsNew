@@ -18,9 +18,9 @@ namespace Fillwords.Desktop
         {
             AvaloniaXamlLoader.Load(this);
 
-            DataWorker.ReadWordsFromFile("words.txt");
-            DataWorker.ReadUserScoreFromFile("users_score.txt");
-            DataWorker.ReadSettingsFromFile("settings.txt");
+            DataWorker.ReadWordsFromFile(DataWorker.WordsDictionaryPath);
+            DataWorker.ReadUserScoreFromFile(DataWorker.UserScoreSavePath);
+            DataWorker.ReadSettingsFromFile(DataWorker.SettingsSavePath);
 
             Printer.SetPrinterParams(((StackPanel)Content).Children,  this.Find<Window>("TheMainWindow"));
 
